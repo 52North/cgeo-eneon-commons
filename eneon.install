@@ -27,6 +27,9 @@
  * Public License for more details.
  */
 
+/**
+ * Implements hook_enable()
+ */
 function eneon_enable() {
   drupal_set_message($message = t('The "eneon" module was successfully enabled.'), $type = 'status');
   module_load_include('inc', 'eneon', 'includes/eneon.common');

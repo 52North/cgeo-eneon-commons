@@ -134,7 +134,8 @@ function eneon_create_or_load_network($network) {
       ->fields('n', array ('id'))
       ->fields('n', array('nid'))
       ->execute()
-      ->fetchAllAssoc('id'); // returns an indexed array
+      // returns an indexed array
+      ->fetchAllAssoc('id');
 
   $nidsById = array_column($existing_networks, 'nid', 'id');
   $idsByNid = array_flip($nidsById);

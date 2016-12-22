@@ -46,19 +46,11 @@ define('ENEON_TABLE_SBA_NETWORK_REFERENCE', 'field_data_network_sba_reference');
 
 define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
 
+/**
+ * Implements hook_init()
+ */
 function eneon_init() {
 	drupal_add_js(array('eneon' => array('ajaxUrl' => url(ENEON_PATH_NETWORKS_AJAX))), 'setting');
-	// next line might not be required because of eneon.issue.ui.inc:38-40
-	// drupal_add_js(drupal_get_path('module', 'eneon') . '/js/suggest_networks.js');
-
-// TODO move this to cron for regular checking
-//   module_load_include('inc', 'eneon', 'includes/eneon.common');
-//   eneon_update_networks();
-
-  // dpm($stub_networks);
-  // dpm( entity_get_info() );
-  // dpm(entity_load('eneon_network'));
-  // eneon_update_networks();
 }
 
 /**
@@ -135,6 +127,7 @@ function eneon_menu() {
   );
   return $items;
 }
+
 /**
  * Implements hook_entity_info().
  */
@@ -149,14 +142,6 @@ function eneon_entity_info() {
               'label' => 'title',
           ),
           'fieldable' => TRUE,
-//           'bundles' => array(
-//               'issue' => array(
-//                   'label' => t('Issue'),
-//                   'admin' => array(
-//                       'path' => 'admin/issues',
-//                   ),
-//               ),
-//           ),
           'entity class' => 'IssueEntity',
           'controller class' => 'IssueEntityController',
           'views controller class' => 'EntityDefaultViewsController',
@@ -184,10 +169,6 @@ function eneon_entity_info() {
           'views controller class' => 'EntityDefaultViewsController',
           'uri callback' => 'entity_class_uri',
           'label callback' => 'entity_class_label',
-//           'admin ui' => array (
-//               'path' => 'admin/networks',
-//               'controller class' => 'EntityDefaultUIController'
-//           ),
           'module' => 'eneon'
       )
   );
@@ -244,6 +225,7 @@ function eneon_issue_entity_property_info() {
   );
   return $info;
 }
+
 /**
  * Implements hook_entity_property_info().
  */
@@ -279,10 +261,12 @@ function eneon_network_entity_property_info() {
   );
   return $info;
 }
+
 function eneon_network_load($id = NULL, $reset = FALSE) {
   $entities = eneon_network_load_multiple(array ($id), $reset);
   return reset($entities);
 }
+
 function eneon_network_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load(ENEON_ENTITY_NETWORK, $ids, $conditions, $reset);
 }
@@ -291,13 +275,15 @@ function eneon_issue_load($id = NULL, $reset = FALSE) {
   $entities = eneon_issue_load_multiple(array ($id), $reset);
   return reset($entities);
 }
+
 function eneon_issue_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
   return entity_load(ENEON_ENTITY_ISSUE, $ids, $conditions, $reset);
 }
 
+///**
+// * Implements hook_cron()
+// */
 // function eneon_cron() {
 // // regularly download and update graph
 // eneon_update_networks();
 // }
-
-
