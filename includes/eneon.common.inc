@@ -43,6 +43,7 @@ function eneon_download_network_graph() {
   $file_object->filemime = 'application/json';
   return $networks;
 }
+
 function eneon_update_networks() {
   $eneon_graph = eneon_download_network_graph();
   if ( !$eneon_graph) {
@@ -93,9 +94,9 @@ function eneon_update_networks() {
       $wrapper->save();
     }
   }
-
   drupal_set_message($message = t('"eneon" module: imported #@count networks.', array('@count' => sizeof($networks))), $type = 'status');
 }
+
 function eneon_get_sbas_like($filters=array('*')) {
   if (!isset($filters) || empty($filters)) {
     return array();
@@ -125,6 +126,7 @@ function eneon_get_sbas_like($filters=array('*')) {
     return array();
   }
 }
+
 function eneon_create_or_load_network($network) {
   $nid = $network ['id'];
   $title = $network ['title'];

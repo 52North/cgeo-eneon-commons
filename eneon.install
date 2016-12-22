@@ -28,12 +28,11 @@
  */
 
 function eneon_enable() {
-
   drupal_set_message($message = t('The "eneon" module was successfully enabled.'), $type = 'status');
   module_load_include('inc', 'eneon', 'includes/eneon.common');
-  //   eneon_update_networks();
-  drupal_set_message($message = t('Networks imported.'), $type = 'status');
+  eneon_update_networks();
 }
+
 /**
  * Implements hook_install()
  */
@@ -67,6 +66,7 @@ function eneon_install() {
   );
   field_create_instance($instance);
 }
+
 /**
  * Implements hook_uninstall().
  */
@@ -79,6 +79,7 @@ function eneon_uninstall() {
   }
   field_delete_field(ENEON_SBA_NETWORK_REFERENCE);
 }
+
 /**
  * Implements hook_schema().
  */
@@ -150,6 +151,5 @@ function eneon_schema() {
           'id',
       ),
   );
-
   return $schema;
 }
