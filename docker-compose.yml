@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+    eneon_db:
+        image: mysql:5.5.53
+        #volumes:
+        #- "../../eneon-data:/var/lib/mysql"
+        restart: always
+        environment:
+            MYSQL_DATABASE: eneon_db
+            MYSQL_ROOT_PASSWORD: mysql
+        #ports:
+            #- 3306:3306
+    
+    eneon_drupal-with-xdebug:
+        depends_on:
+            - eneon_db
+        build: . 
+        volumes:
+            # ./sites/all/modules
+            - ".:/var/www/html/sites/all/modules/eneon"
+            - "./config/launch.sh:/usr/local/bin/startup"
+        links:
+            - eneon_db
+        ports:
+            - 80:80
+        restart: always
+
+        

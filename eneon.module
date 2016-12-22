@@ -1,0 +1,303 @@
+<?php
+/*
+ * Copyright (C) 2016
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
+ *
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
+ *
+ * - Apache License, version 2.0
+ * - Apache Software License, version 1.0
+ * - GNU Lesser General Public License, version 3
+ * - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ * - Common Development and Distribution License (CDDL), version 1.0
+ *
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public
+ * License version 2 and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ */
+
+require_once 'eneon.issue.ui.inc';
+require_once 'includes/eneon.issue.controller.inc';
+require_once 'includes/eneon.network.controller.inc';
+
+define('ENEON_TABLE_NETWORKS', 'eneon_networks');
+define('ENEON_TABLE_ISSUES', 'eneon_issues');
+
+define('ENEON_ENTITY_NETWORK', 'eneon_network');
+define('ENEON_ENTITY_ISSUE', 'eneon_issue');
+
+define('ENEON_PATH_ISSUES', 'issues');
+define('ENEON_PATH_NETWORKS', 'networks');
+
+define('ENEON_VOCAB_BUNDLE_SBA', 'sba_vocab');
+define('ENEON_SBA_NETWORK_REFERENCE', 'network_sba_reference');
+define('ENEON_TABLE_SBA_NETWORK_REFERENCE', 'field_data_network_sba_reference');
+
+define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
+
+function eneon_init() {
+	drupal_add_js(array('eneon' => array('ajaxUrl' => url(ENEON_PATH_NETWORKS_AJAX))), 'setting');
+	// next line might not be required because of eneon.issue.ui.inc:38-40
+	// drupal_add_js(drupal_get_path('module', 'eneon') . '/js/suggest_networks.js');
+
+// TODO move this to cron for regular checking
+//   module_load_include('inc', 'eneon', 'includes/eneon.common');
+//   eneon_update_networks();
+
+  // dpm($stub_networks);
+  // dpm( entity_get_info() );
+  // dpm(entity_load('eneon_network'));
+  // eneon_update_networks();
+}
+
+/**
+ * Implements hook_menu()
+ */
+function eneon_menu() {
+
+  $autoload_issue_wildcard = ENEON_PATH_ISSUES . '/%' . ENEON_ENTITY_ISSUE;
+  $autoload_network_wildcard = ENEON_PATH_NETWORKS . '/%' . ENEON_ENTITY_NETWORK;
+
+  $items[ENEON_PATH_NETWORKS_AJAX] = array(
+  		'type' => MENU_CALLBACK,
+  		'page callback' => 'eneon_network_ajax',
+  		'access arguments' => array('access content'),
+      'file' => 'includes/eneon.network.ajax.inc',
+  );
+
+  $items[ENEON_PATH_ISSUES] = array(
+      'title' => t('Issues'),
+      'page callback' => 'eneon_view_issue_list',
+      'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+  );
+  $items[ENEON_PATH_ISSUES . '/add'] = array(
+      'title' => t('Add issue'),
+      'page callback' => 'eneon_add_entity_item',
+      'page arguments' => array(ENEON_ENTITY_ISSUE),
+      'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+      'type' => MENU_LOCAL_TASK,
+  );
+  $items[$autoload_issue_wildcard] = array(
+      'title' => t('Issue'),
+      'page callback' => 'eneon_view_entity_item',
+      'page arguments' => array(1),
+      'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+  );
+  $items[$autoload_issue_wildcard . '/view'] = array(
+    'title' => 'View Issue',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items[$autoload_issue_wildcard . '/edit'] = array(
+      'title' => 'Edit issue',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('eneon_issue_form', 1),
+      'access arguments' => array('access content'),
+      'file' => 'eneon.issue.ui.inc',
+      'type' => MENU_LOCAL_TASK,
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+  );
+  // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
+  $items[$autoload_issue_wildcard . '/delete'] = array(
+      'title' => t('Delete issue'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('eneon_issue_form_delete', 1),
+      'access arguments' => array('access content'),
+      'file' => 'eneon.issue.ui.inc',
+  );
+
+  $items[ENEON_PATH_NETWORKS] = array(
+      'title' => t('Networks'),
+      'page callback' => 'eneon_view_network_list',
+      'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+  );
+  $items[$autoload_network_wildcard] = array(
+      'title' => t('Network'),
+      'page callback' => 'eneon_view_entity_item',
+      'page arguments' => array(1, ENEON_ENTITY_NETWORK),
+      'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+  );
+  return $items;
+}
+/**
+ * Implements hook_entity_info().
+ */
+function eneon_entity_info() {
+  return array (
+      ENEON_ENTITY_ISSUE => array (
+          'label' => t('ENEON Issue'),
+          'plural label' => t('ENEON Issues'),
+          'base table' => 'eneon_issues',
+          'entity keys' => array (
+              'id' => 'id',
+              'label' => 'title',
+          ),
+          'fieldable' => TRUE,
+//           'bundles' => array(
+//               'issue' => array(
+//                   'label' => t('Issue'),
+//                   'admin' => array(
+//                       'path' => 'admin/issues',
+//                   ),
+//               ),
+//           ),
+          'entity class' => 'IssueEntity',
+          'controller class' => 'IssueEntityController',
+          'views controller class' => 'EntityDefaultViewsController',
+          'label callback' => 'entity_class_label',
+          'uri callback' => 'entity_class_uri',
+          'label callback' => 'entity_class_label',
+          'admin ui' => array (
+              'path' => 'admin/structure',
+              'controller class' => 'EntityDefaultUIController'
+          ),
+          'module' => 'eneon'
+      ),
+
+      ENEON_ENTITY_NETWORK => array (
+          'label' => t('ENEON Network'),
+          'plural label' => t('ENEON Networks'),
+          'entity class' => 'NetworkEntity',
+          'base table' => 'eneon_networks',
+          'entity keys' => array (
+              'id' => 'id',
+              'label' => 'title',
+          ),
+          'fieldable' => TRUE,
+          'controller class' => 'NetworkEntityController',
+          'views controller class' => 'EntityDefaultViewsController',
+          'uri callback' => 'entity_class_uri',
+          'label callback' => 'entity_class_label',
+//           'admin ui' => array (
+//               'path' => 'admin/networks',
+//               'controller class' => 'EntityDefaultUIController'
+//           ),
+          'module' => 'eneon'
+      )
+  );
+}
+
+function eneon_issue_access_callback($op, $issue = NULL, $account = NULL) {
+  if ($op == 'view' || $op == 'update' || $op == 'create' || $op == 'delete') {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function eneon_issue_entity_property_info() {
+
+  // TODO more infos at
+  //  https://www.drupal.org/node/1021466
+  //  http://wolfgangziegler.net/introducing_entity_metadata
+
+  return array(
+      'issue' => array(
+          'properties' => array(
+              'id' => array(
+                  'label' => t('Issue ID'),
+                  'description' => t('The ID of the issue.'),
+                  'type' => 'integer',
+                  'schema field' => 'id',
+              ),
+              'title' => array(
+                  'label' => t('Issue title'),
+                  'description' => t('Title of the issue.'),
+                  'type' => 'text',
+                  'schema field' => 'title',
+               ),
+              'description' => array(
+                  'label' => t('Issue description'),
+                  'description' => t('Description of the issue.'),
+                  'type' => 'text',
+                  'schema field' => 'description',
+              ),
+//               'networks' => array(
+//                   'label' => t('Related networks'),
+//                   'type' => 'list<' . ENEON_ENTITY_NETWORK . '>',
+//                   'description' => t('Networks which have been related with this issue.'),
+//                   'getter callback' => '',
+//                   'computed' => TRUE, // FALSE?
+//               ),
+          ),
+      ),
+  );
+  return $info;
+}
+/**
+ * Implements hook_entity_property_info().
+ */
+function eneon_network_entity_property_info() {
+
+  // TODO more infos at
+  //  https://www.drupal.org/node/1021466
+  //  http://wolfgangziegler.net/introducing_entity_metadata
+
+  return array(
+      'network' => array(
+          'properties' => array(
+              'id' => array(
+                  'label' => t('Network ID'),
+                  'description' => t('The ID of the network.'),
+                  'type' => 'integer',
+                  'schema field' => 'id',
+              ),
+              'title' => array(
+                  'label' => t('Network title'),
+                  'description' => t('Title of the network.'),
+                  'type' => 'text',
+                  'schema field' => 'title',
+              ),
+              'description' => array(
+                  'label' => t('Network description'),
+                  'description' => t('Description of the network.'),
+                  'type' => 'text',
+                  'schema field' => 'description',
+              ),
+          ),
+      ),
+  );
+  return $info;
+}
+function eneon_network_load($id = NULL, $reset = FALSE) {
+  $entities = eneon_network_load_multiple(array ($id), $reset);
+  return reset($entities);
+}
+function eneon_network_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load(ENEON_ENTITY_NETWORK, $ids, $conditions, $reset);
+}
+
+function eneon_issue_load($id = NULL, $reset = FALSE) {
+  $entities = eneon_issue_load_multiple(array ($id), $reset);
+  return reset($entities);
+}
+function eneon_issue_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load(ENEON_ENTITY_ISSUE, $ids, $conditions, $reset);
+}
+
+// function eneon_cron() {
+// // regularly download and update graph
+// eneon_update_networks();
+// }
+
+

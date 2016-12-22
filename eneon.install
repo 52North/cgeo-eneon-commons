@@ -1,0 +1,155 @@
+<?php
+/*
+ * Copyright (C) 2016
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published
+ * by the Free Software Foundation.
+ *
+ * If the program is linked with libraries which are licensed under one of
+ * the following licenses, the combination of the program with the linked
+ * library is not considered a "derivative work" of the program:
+ *
+ * - Apache License, version 2.0
+ * - Apache Software License, version 1.0
+ * - GNU Lesser General Public License, version 3
+ * - Mozilla Public License, versions 1.0, 1.1 and 2.0
+ * - Common Development and Distribution License (CDDL), version 1.0
+ *
+ * Therefore the distribution of the program linked with libraries licensed
+ * under the aforementioned licenses, is permitted by the copyright holders
+ * if the distribution is compliant with both the GNU General Public
+ * License version 2 and the aforementioned licenses.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.
+ */
+
+function eneon_enable() {
+
+  drupal_set_message($message = t('The "eneon" module was successfully enabled.'), $type = 'status');
+  module_load_include('inc', 'eneon', 'includes/eneon.common');
+  //   eneon_update_networks();
+  drupal_set_message($message = t('Networks imported.'), $type = 'status');
+}
+/**
+ * Implements hook_install()
+ */
+function eneon_install() {
+  $sba_vocab = (object) array(
+      'name' => 'SBA vocabulary',
+      'description' => 'Societal Benefit Areas Vocabulary',
+      'machine_name' => ENEON_VOCAB_BUNDLE_SBA,
+  );
+  taxonomy_vocabulary_save($sba_vocab);
+
+  $network_sba_reference_field = array(
+      'field_name' => ENEON_SBA_NETWORK_REFERENCE,
+      'type' => 'entityreference',
+      'locked' => TRUE, // Settings can not be changed
+      'settings' => array(
+          'target_type' => 'taxonomy_term',//ENEON_VOCAB_BUNDLE_SBA,
+          'no_ui' => TRUE, // not visible in field UI
+      ),
+      'cardinality' => -1, // unlimited
+      'translatable' => FALSE,
+  );
+  field_create_field($network_sba_reference_field);
+
+  $instance = array(
+      'field_name' => ENEON_SBA_NETWORK_REFERENCE,
+      'entity_type' => ENEON_ENTITY_NETWORK,
+      'label' => 'Reference to SBAs',
+      'required' => FALSE,
+      'bundle' => ENEON_ENTITY_NETWORK,
+  );
+  field_create_instance($instance);
+}
+/**
+ * Implements hook_uninstall().
+ */
+function eneon_uninstall() {
+  drupal_set_message('eneon module: uninstalling module', $type='status');
+  drupal_set_message('eneon module: delete SBA vocab', $type='status');
+  $vocab = taxonomy_vocabulary_machine_name_load(ENEON_VOCAB_BUNDLE_SBA);
+  if (isset($vocab)) {
+    taxonomy_vocabulary_delete($vocab->vid);
+  }
+  field_delete_field(ENEON_SBA_NETWORK_REFERENCE);
+}
+/**
+ * Implements hook_schema().
+ */
+function eneon_schema() {
+  $schema = array ();
+
+  $schema [ENEON_TABLE_ISSUES] = array (
+      'description' => 'The base table for the ENEON issue entity',
+      'fields' => array (
+          'id' => array (
+              'description' => 'Primary key.',
+              'type' => 'serial',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+          ),
+          'title' => array (
+              'description' => 'Issue title.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+          ),
+          'description' => array (
+              'description' => 'Issue description',
+              'type' => 'text',
+              'size' => 'medium',
+              'not null' => FALSE,
+          ),
+      ),
+      'primary key' => array (
+          'id',
+      ),
+  );
+
+  $schema [ENEON_TABLE_NETWORKS] = array (
+      'description' => 'The base table for the ENEON network entity',
+      'fields' => array (
+          'id' => array (
+              'description' => 'Primary key.',
+              'type' => 'serial',
+              'unsigned' => TRUE,
+              'not null' => TRUE,
+          ),
+          'nid' => array (
+              'description' => 'Network id.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+          ),
+          'title' => array (
+              'description' => 'Network title.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => TRUE,
+          ),
+          'type' => array (
+              'description' => 'Network type.',
+              'type' => 'varchar',
+              'length' => 255,
+              'not null' => FALSE,
+          ),
+          'description' => array (
+              'description' => 'Network description',
+              'type' => 'text',
+              'size' => 'medium',
+              'not null' => FALSE,
+          ),
+      ),
+      'primary key' => array (
+          'id',
+      ),
+  );
+
+  return $schema;
+}
