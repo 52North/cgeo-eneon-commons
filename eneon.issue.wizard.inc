@@ -299,23 +299,6 @@ function eneon_issue_wizard_network_suggestions_validate($form, &$form_state) {
 }
 
 /**
- * Returns form elements for the 'other info' page of the wizard.
- *
- * This is the third and last step of the example wizard.
- *
- * @ingroup eneon
- */
-function eneon_issue_wizard_other_info($form, &$form_state) {
-  $form = array();
-  $form['aunts_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t("Your first cousin's aunt's Social Security number"),
-    '#default_value' => !empty($form_state['values']['aunts_name']) ? $form_state['values']['aunts_name'] : '',
-  );
-  return $form;
-}
-
-/**
  * Wizard form submit handler.
  *
  * This function:

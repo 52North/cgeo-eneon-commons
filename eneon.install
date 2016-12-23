@@ -105,19 +105,8 @@ function eneon_install() {
       'label' => 'Selected SBAs',
       'required' => FALSE,
       'bundle' => ENEON_ENTITY_ISSUE,
-      //       'display' => array(
-          //           'default' => array(
-              //               'type' => 'taxonomy_term_reference_link',
-          //           ),
-  //           'teaser' => array(
-      //               'type' => 'hidden',
-      //           ),
-  //           'full' => array(
-      //               'type' => 'taxonomy_term_reference_link',
-      //           ),
-  //       ),
-          );
-          field_create_instance($issue_selected_sbas_instance);
+  );
+  field_create_instance($issue_selected_sbas_instance);
 }
 /**
  * Implements hook_uninstall().

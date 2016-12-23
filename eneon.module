@@ -91,9 +91,6 @@ function eneon_menu() {
       'page arguments' => array('eneon_issue_wizard'),
       'access arguments' => array('access content'),
       'file' => 'eneon.issue.wizard.inc',
-//       'page callback' => 'eneon_add_entity_item',
-//       'page arguments' => array(ENEON_ENTITY_ISSUE),
-//       'file' => 'eneon.pages.inc',
       'type' => MENU_LOCAL_TASK,
   );
   $items[$autoload_issue_wildcard] = array(
@@ -113,10 +110,6 @@ function eneon_menu() {
       'page callback' => 'drupal_get_form',
       'file' => 'eneon.issue.wizard.inc',
       'page arguments' => array('eneon_issue_wizard', 1),
-//       'access arguments' => array('access content'),
-//       'page arguments' => array('eneon_issue_form', 1),
-//       'access arguments' => array('access content'),
-//       'file' => 'eneon.issue.ui.inc',
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
   );
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
@@ -225,18 +218,6 @@ function eneon_issue_entity_property_info() {
                   'type' => 'text',
                   'schema field' => 'description',
               ),
-//               'selected_sbas' => array(
-//                   'label' => t('Selected SBAs'),
-//                   'type' => 'list<' . taxonomy_term_reference . '>',
-//                   'description' => t('Selected SBAs related to this issue'),
-//               ),
-//               'networks' => array(
-//                   'label' => t('Related networks'),
-//                   'type' => 'list<' . ENEON_ENTITY_NETWORK . '>',
-//                   'description' => t('Networks which have been related with this issue.'),
-//                   'getter callback' => '',
-//                   'computed' => TRUE, // FALSE?
-//               ),
           ),
       ),
   );
@@ -273,12 +254,6 @@ function eneon_network_entity_property_info() {
                   'type' => 'text',
                   'schema field' => 'description',
               ),
-//               ENEON_NETWORK_SBA_REFERENCE => array(
-//                   'label' => t('Network SBA reference'),
-//                   'description' => t('SBA references of the network.'),
-//                   'type' => 'text',
-//                   'schema field' => ENEON_TABLE_NETWORK_SBA_REFERENCE,
-//               ),
           ),
       ),
   );
