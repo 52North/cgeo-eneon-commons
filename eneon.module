@@ -32,17 +32,21 @@ require_once 'includes/eneon.issue.controller.inc';
 require_once 'includes/eneon.network.controller.inc';
 
 define('ENEON_TABLE_NETWORKS', 'eneon_networks');
-define('ENEON_TABLE_ISSUES', 'eneon_issues');
-
 define('ENEON_ENTITY_NETWORK', 'eneon_network');
-define('ENEON_ENTITY_ISSUE', 'eneon_issue');
-
-define('ENEON_PATH_ISSUES', 'issues');
 define('ENEON_PATH_NETWORKS', 'networks');
 
-define('ENEON_VOCAB_BUNDLE_SBA', 'sba_vocab');
-define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_reference');
+define('ENEON_ENTITY_ISSUE', 'eneon_issue');
+define('ENEON_TABLE_ISSUES', 'eneon_issues');
+define('ENEON_PATH_ISSUES', 'issues');
+
+
+/**
+ * field constants
+ */
+//
+define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
+
 
 define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
 
