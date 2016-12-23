@@ -230,9 +230,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
-
-  // TODO add selected_sbas list to entity
-  $selected_sbas = !empty($form_state['values']['sba_selection']) ? $form_state['values']['sba_selection'] : $wrapper->selected_sbas->value();
+  $selected_sbas = !empty($form_state['values'][ENEON_ISSUE_SELECTED_SBAS]) ? $form_state['values'][ENEON_ISSUE_SELECTED_SBAS] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
 
   $form['title'] = array(
       '#title' => t('Title'),
@@ -278,6 +276,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $entity = $form_state[ENEON_ENTITY_ISSUE];
   $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
 
+  $filter = array();
+  $filter['sbas'] = !empty($form_state['values'][ENEON_ISSUE_SELECTED_SBAS]) ? $form_state['values'][ENEON_ISSUE_SELECTED_SBAS] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
   // TODO perform network query based on stored metadata (chosen SBA/themes)
   // TODO always show selected networks (even they do not match actual query)
 

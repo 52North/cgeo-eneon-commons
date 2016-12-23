@@ -82,7 +82,7 @@ function eneon_update_networks() {
 
       // Add additional attributes
       $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
-      $existing_relations = $wrapper->network_sba_ref->value();
+      $existing_relations = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
 
       $related_sbas = eneon_get_sbas_like($sbas);
       foreach($related_sbas as $related_sba) {
@@ -90,7 +90,7 @@ function eneon_update_networks() {
           $existing_relations[] = $related_sba;
         }
       }
-      $wrapper->network_sba_ref->set($existing_relations);
+      $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->set($existing_relations);
       $wrapper->save();
     }
   }
