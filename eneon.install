@@ -50,7 +50,6 @@ function eneon_enable() {
       'entity_type' => ENEON_ENTITY_NETWORK,
       'label' => 'Reference to SBAs',
       'required' => FALSE,
-      //       'bundle' => ENEON_BUNDLE_NETWORK,
       'bundle' => ENEON_ENTITY_NETWORK,
 //       'display' => array(
 //           'default' => array(

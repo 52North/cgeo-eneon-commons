@@ -42,7 +42,6 @@ define('ENEON_PATH_NETWORKS', 'networks');
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'sba_vocab');
 define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_reference');
-// define('ENEON_BUNDLE_NETWORK', ENEON_ENTITY_NETWORK . 'bundle');
 define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
 
 define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
@@ -152,24 +151,12 @@ function eneon_entity_info() {
               'label' => 'title',
           ),
           'fieldable' => TRUE,
-//           'bundles' => array(
-//               'issue' => array(
-//                   'label' => t('Issue'),
-//                   'admin' => array(
-//                       'path' => 'admin/issues',
-//                   ),
-//               ),
-//           ),
           'entity class' => 'IssueEntity',
           'controller class' => 'IssueEntityController',
           'views controller class' => 'EntityDefaultViewsController',
           'label callback' => 'entity_class_label',
           'uri callback' => 'entity_class_uri',
           'label callback' => 'entity_class_label',
-          'admin ui' => array (
-              'path' => 'admin/structure',
-              'controller class' => 'EntityDefaultUIController'
-          ),
           'module' => 'eneon'
       ),
 
