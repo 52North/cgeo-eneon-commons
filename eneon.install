@@ -91,6 +91,33 @@ function eneon_install() {
   );
   taxonomy_vocabulary_save($sba_vocab);
 
+  $issue_selected_sbas = array(
+      'field_name' => ENEON_ISSUE_SELECTED_SBAS,
+      'type' => 'list_integer',
+      'translatable' => FALSE,
+      'cardinality' => 8,
+  );
+  field_create_field($issue_selected_sbas);
+
+  $issue_selected_sbas_instance = array(
+      'field_name' => ENEON_ISSUE_SELECTED_SBAS,
+      'entity_type' => ENEON_ENTITY_ISSUE,
+      'label' => 'Selected SBAs',
+      'required' => FALSE,
+      'bundle' => ENEON_ENTITY_ISSUE,
+      //       'display' => array(
+          //           'default' => array(
+              //               'type' => 'taxonomy_term_reference_link',
+          //           ),
+  //           'teaser' => array(
+      //               'type' => 'hidden',
+      //           ),
+  //           'full' => array(
+      //               'type' => 'taxonomy_term_reference_link',
+      //           ),
+  //       ),
+          );
+          field_create_instance($issue_selected_sbas_instance);
 }
 /**
  * Implements hook_uninstall().
@@ -100,6 +127,12 @@ function eneon_uninstall() {
   if (isset($vocab)) {
     taxonomy_vocabulary_delete($vocab->vid);
   }
+
+  if ($instance = field_info_instance(ENEON_ENTITY_ISSUE, ENEON_ISSUE_SELECTED_SBAS, ENEON_ENTITY_ISSUE)) {
+    field_delete_instance($instance);
+  }
+  field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
+
 }
 
 /**

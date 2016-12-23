@@ -232,7 +232,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
 
   // TODO add selected_sbas list to entity
-  $selected_sbas = !empty($form_state['values']['selected_sbas']) ? $form_state['values']['selected_sbas'] : array(); //$wrapper->selected_sbas->value();
+  $selected_sbas = !empty($form_state['values']['sba_selection']) ? $form_state['values']['sba_selection'] : $wrapper->selected_sbas->value();
 
   $form['title'] = array(
       '#title' => t('Title'),
@@ -252,7 +252,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
   foreach ($all_sbas as $sba) {
     $options[$sba->tid] = $sba->name;
   }
-  $form['sbas'] = array (
+  $form['sba_selection'] = array (
       '#title' => t('Sociatal Benefit Areas'),
       '#type' => 'select',
       '#multiple' => TRUE,

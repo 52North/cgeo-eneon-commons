@@ -47,6 +47,8 @@ define('ENEON_PATH_ISSUES', 'issues');
 define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
 
+define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
+define('ENEON_TABLE_ISSUE_SELECTED_SBAS', 'field_data_' . ENEON_ISSUE_SELECTED_SBAS);
 
 define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
 
