@@ -31,29 +31,14 @@
  * Implements hook_enable()
  */
 function eneon_enable() {
-  drupal_set_message($message = t('The "eneon" module was successfully enabled.'), $type = 'status');
-  module_load_include('inc', 'eneon', 'includes/eneon.common');
-  eneon_update_networks();
-}
 
-/**
- * Implements hook_install()
- */
-function eneon_install() {
-  $sba_vocab = (object) array(
-      'name' => 'SBA vocabulary',
-      'description' => 'Societal Benefit Areas Vocabulary',
-      'machine_name' => ENEON_VOCAB_BUNDLE_SBA,
-  );
-  taxonomy_vocabulary_save($sba_vocab);
-
-  $network_sba_reference_field = array(
+    $network_sba_reference_field = array(
       'field_name' => ENEON_SBA_NETWORK_REFERENCE,
       'type' => 'entityreference',
-      'locked' => TRUE, // Settings can not be changed
+//       'type' => 'taxonomy_term_reference',
+//             'locked' => TRUE, // Settings can not be changed
       'settings' => array(
-          'target_type' => 'taxonomy_term',//ENEON_VOCAB_BUNDLE_SBA,
-          'no_ui' => TRUE, // not visible in field UI
+          'target_type' => 'taxonomy_term', //ENEON_VOCAB_BUNDLE_SBA,
       ),
       'cardinality' => -1, // unlimited
       'translatable' => FALSE,
@@ -65,22 +50,57 @@ function eneon_install() {
       'entity_type' => ENEON_ENTITY_NETWORK,
       'label' => 'Reference to SBAs',
       'required' => FALSE,
+      //       'bundle' => ENEON_BUNDLE_NETWORK,
       'bundle' => ENEON_ENTITY_NETWORK,
+//       'display' => array(
+//           'default' => array(
+//               'type' => 'taxonomy_term_reference_link',
+//           ),
+//           'teaser' => array(
+//               'type' => 'hidden',
+//           ),
+//           'full' => array(
+//               'type' => 'taxonomy_term_reference_link',
+//           ),
+//       ),
   );
   field_create_instance($instance);
-}
 
+  module_load_include('inc', 'eneon', 'includes/eneon.common');
+  eneon_update_networks();
+}
+/**
+ * Implements hook_disable)
+ */
+function eneon_disable() {
+//   if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_SBA_NETWORK_REFERENCE, ENEON_BUNDLE_NETWORK)) {
+  if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_SBA_NETWORK_REFERENCE, ENEON_ENTITY_NETWORK)) {
+    field_delete_instance($instance);
+  }
+  field_delete_field(ENEON_SBA_NETWORK_REFERENCE);
+
+}
+/**
+ * Implements hook_install()
+ */
+function eneon_install() {
+
+  $sba_vocab = (object) array(
+      'name' => 'SBA vocabulary',
+      'description' => 'Societal Benefit Areas Vocabulary',
+      'machine_name' => ENEON_VOCAB_BUNDLE_SBA,
+  );
+  taxonomy_vocabulary_save($sba_vocab);
+
+}
 /**
  * Implements hook_uninstall().
  */
 function eneon_uninstall() {
-  drupal_set_message('eneon module: uninstalling module', $type='status');
-  drupal_set_message('eneon module: delete SBA vocab', $type='status');
   $vocab = taxonomy_vocabulary_machine_name_load(ENEON_VOCAB_BUNDLE_SBA);
   if (isset($vocab)) {
     taxonomy_vocabulary_delete($vocab->vid);
   }
-  field_delete_field(ENEON_SBA_NETWORK_REFERENCE);
 }
 
 /**
