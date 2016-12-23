@@ -96,7 +96,7 @@ function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
     $form_state['step_information'] = _eneon_issue_wizard_steps();
   }
   $step = &$form_state['step'];
-  drupal_set_title(t('Extensible Wizard: Step @step', array('@step' => $step)));
+  drupal_set_title(t('Create Issue: Step @step', array('@step' => $step)));
 
   // Call the function named in $form_state['step_information'] to get the
   // form elements to display for this step.
