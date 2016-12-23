@@ -27,7 +27,6 @@
   * Public License for more details.
   */
 
-
 class NetworkEntity extends Entity {
 
   protected function defaultLabel() {

@@ -33,8 +33,8 @@ function eneon_view_network_list() {
   // when listing entities, we use the teaser view
   $list = entity_view(ENEON_ENTITY_NETWORK, $entities, 'teaser');
   if (isset($list[ENEON_ENTITY_NETWORK])) {
-    foreach ($list[ENEON_ENTITY_NETWORK] as $entity_type) {
-        $output[] = drupal_render($list);
+    foreach ($list[ENEON_ENTITY_NETWORK] as $entity) {
+        $output[] = drupal_render($entity);
     }
   }
   return implode($output);
