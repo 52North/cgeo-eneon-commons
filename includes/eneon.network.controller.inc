@@ -45,8 +45,7 @@ class NetworkEntity extends Entity {
 class NetworkEntityController extends EntityAPIController {
 
   public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
-
-    $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
+    $content = parent::buildContent($entity, $view_mode, $langcode, $content); 
 
     $content['description'] = array(
         '#type' => 'markup',
@@ -54,8 +53,16 @@ class NetworkEntityController extends EntityAPIController {
         '#prefix' => '<div class="network-description">',
         '#suffix' => '</div>',
     );
+    
+    switch ($view_mode) {
+    	case 'teaser':
+    		unset($content['network_sba_reference']);
+    		break;
+    	case 'full' :
+    		$content['network_sba_reference'] = field_view_field('eneon_network', $entity, 'network_sba_reference');
+    }
 
-    return parent::buildContent($entity, $view_mode, $langcode, $content);;
+    return $content;
 
   }
 
