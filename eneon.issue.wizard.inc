@@ -20,7 +20,7 @@
  * - Steps are defined in the _eneon_issue_steps() function. Include or alter
  *   the steps as you require.
  * - For each step, implement the corresponding 'form' function (see
- *   'eneon_issue_wizard_personal_info' for the first step in this example.)
+ *   'eneon_issue_wizard_issue_metadata' for the first step in this example.)
  *   Each step is a regular form, and the wizard collects all the values of the
  *   included forms.
  * - Optionally, you may include custom validation functions using the regular
@@ -47,10 +47,10 @@
 function _eneon_issue_wizard_steps() {
   return array(
     1 => array(
-      'form' => 'eneon_issue_wizard_personal_info',
+      'form' => 'eneon_issue_wizard_issue_metadata',
     ),
     2 => array(
-      'form' => 'eneon_issue_wizard_location_info',
+      'form' => 'eneon_issue_wizard_issue_network_suggestions',
     ),
 //     3 => array(
 //       'form' => 'eneon_issue_wizard_other_info',
@@ -215,7 +215,7 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function eneon_issue_wizard_personal_info($form, &$form_state) {
+function eneon_issue_wizard_issue_metadata($form, &$form_state) {
   $form = array();
   $form['first_name'] = array(
     '#type' => 'textfield',
@@ -238,7 +238,7 @@ function eneon_issue_wizard_personal_info($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function eneon_issue_wizard_location_info($form, &$form_state) {
+function eneon_issue_wizard_issue_network_suggestions($form, &$form_state) {
   $form = array();
   $form['city'] = array(
     '#type' => 'textfield',
@@ -259,7 +259,7 @@ function eneon_issue_wizard_location_info($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function eneon_issue_wizard_location_info_validate($form, &$form_state) {
+function eneon_issue_wizard_issue_network_suggestions_validate($form, &$form_state) {
   if ($form_state['values']['city'] == 'San Francisco') {
     form_set_error('city', t('You were warned not to enter "San Francisco"'));
   }
