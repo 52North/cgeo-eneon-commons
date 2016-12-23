@@ -294,22 +294,29 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
       '#title' => t('Proposed Networks'),
-      '#suffix' => '<ul id="suggested-networks">',
-      '#postfix' => '</ul>',
+      '#prefix' => '<div id="eneon-suggested-networks">',
+      '#suffix' => '</div>'
   );
 
   $selected_networks = array();
   // TODO always show selected networks (even they do not match actual query)
 
   if (eneon_not_empty_array($networks)) {
+    $suggested_networks = array();
     foreach ($networks as $network) {
-      $form['fieldset_eneon_proposed_networks']['suggested-network-' . $network->id] = array(
+      $suggested_networks[] = array(
+//       $form['fieldset_eneon_proposed_networks']['suggested-network-' . $network->id] = array(
           '#type' => 'checkbox',
           '#title' => $network->title,
-          '#suffix' => '<li>',
-          '#postfix' => '</li>',
+          '#prefix' => '<li id="eneon-suggested-network-' . $network->id . '">',
+          '#suffix' => '</li>',
       );
     }
+    $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
+        '#prefix' => '<ul>',
+        '#suffix' => '</ul>',
+        '#markup' => drupal_render($suggested_networks),
+    );
   }
   return $form;
 }
