@@ -290,14 +290,27 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
     sort($networks);
   }
 
-  // TODO perform network query based on stored metadata (chosen SBA/themes)
-  // TODO always show selected networks (even they do not match actual query)
 
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
       '#title' => t('Proposed Networks'),
+      '#suffix' => '<ul id="suggested-networks">',
+      '#postfix' => '</ul>',
   );
 
+  $selected_networks = array();
+  // TODO always show selected networks (even they do not match actual query)
+
+  if (eneon_not_empty_array($networks)) {
+    foreach ($networks as $network) {
+      $form['fieldset_eneon_proposed_networks']['suggested-network-' . $network->id] = array(
+          '#type' => 'checkbox',
+          '#title' => $network->title,
+          '#suffix' => '<li>',
+          '#postfix' => '</li>',
+      );
+    }
+  }
   return $form;
 }
 
