@@ -83,7 +83,11 @@ function _eneon_issue_wizard_steps() {
  *
  * @ingroup eneon
  */
-function eneon_issue_wizard($form, &$form_state) {
+function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
+
+  $form_state[ENEON_ENTITY_ISSUE] = !isset($entity)
+      ? entity_create(ENEON_ENTITY_ISSUE, array())
+      : $entity;
 
   // Initialize a description of the steps for the wizard.
   if (empty($form_state['step'])) {
