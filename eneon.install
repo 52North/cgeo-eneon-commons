@@ -33,7 +33,7 @@
 function eneon_enable() {
 
     $network_sba_reference_field = array(
-      'field_name' => ENEON_SBA_NETWORK_REFERENCE,
+      'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'type' => 'entityreference',
 //       'type' => 'taxonomy_term_reference',
 //             'locked' => TRUE, // Settings can not be changed
@@ -46,7 +46,7 @@ function eneon_enable() {
   field_create_field($network_sba_reference_field);
 
   $instance = array(
-      'field_name' => ENEON_SBA_NETWORK_REFERENCE,
+      'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'entity_type' => ENEON_ENTITY_NETWORK,
       'label' => 'Reference to SBAs',
       'required' => FALSE,
@@ -73,11 +73,11 @@ function eneon_enable() {
  * Implements hook_disable)
  */
 function eneon_disable() {
-//   if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_SBA_NETWORK_REFERENCE, ENEON_BUNDLE_NETWORK)) {
-  if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_SBA_NETWORK_REFERENCE, ENEON_ENTITY_NETWORK)) {
+//   if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_NETWORK_SBA_REFERENCE, ENEON_BUNDLE_NETWORK)) {
+  if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_NETWORK_SBA_REFERENCE, ENEON_ENTITY_NETWORK)) {
     field_delete_instance($instance);
   }
-  field_delete_field(ENEON_SBA_NETWORK_REFERENCE);
+  field_delete_field(ENEON_TABLE_NETWORK_SBA_REFERENCE);
 
 }
 /**

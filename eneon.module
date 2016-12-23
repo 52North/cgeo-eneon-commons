@@ -41,9 +41,9 @@ define('ENEON_PATH_ISSUES', 'issues');
 define('ENEON_PATH_NETWORKS', 'networks');
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'sba_vocab');
-define('ENEON_SBA_NETWORK_REFERENCE', 'network_sba_reference');
-define('ENEON_BUNDLE_NETWORK', ENEON_ENTITY_NETWORK . 'bundle');
-define('ENEON_TABLE_SBA_NETWORK_REFERENCE', 'field_data_network_sba_reference');
+define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_reference');
+// define('ENEON_BUNDLE_NETWORK', ENEON_ENTITY_NETWORK . 'bundle');
+define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
 
 define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
 
@@ -274,11 +274,11 @@ function eneon_network_entity_property_info() {
                   'type' => 'text',
                   'schema field' => 'description',
               ),
-//               'ENEON_SBA_NETWORK_REFERENCE' => array(
+//               'ENEON_NETWORK_SBA_REFERENCE' => array(
 //                   'label' => t('Network SBA reference'),
 //                   'description' => t('SBA references of the network.'),
 //                   'type' => 'text',
-//                   'schema field' => ENEON_TABLE_SBA_NETWORK_REFERENCE,
+//                   'schema field' => ENEON_TABLE_NETWORK_SBA_REFERENCE,
 //               ),
           ),
       ),
