@@ -20,7 +20,7 @@
  * - Steps are defined in the _eneon_issue_steps() function. Include or alter
  *   the steps as you require.
  * - For each step, implement the corresponding 'form' function (see
- *   'eneon_issue_wizard_issue_metadata' for the first step in this example.)
+ *   'eneon_issue_wizard_metadata' for the first step in this example.)
  *   Each step is a regular form, and the wizard collects all the values of the
  *   included forms.
  * - Optionally, you may include custom validation functions using the regular
@@ -52,14 +52,11 @@
 function _eneon_issue_wizard_steps() {
   return array(
     1 => array(
-      'form' => 'eneon_issue_wizard_issue_metadata',
+      'form' => 'eneon_issue_wizard_metadata',
     ),
     2 => array(
-      'form' => 'eneon_issue_wizard_issue_network_suggestions',
+      'form' => 'eneon_issue_wizard_network_suggestions',
     ),
-//     3 => array(
-//       'form' => 'eneon_issue_wizard_other_info',
-//     ),
   );
 }
 
@@ -225,7 +222,7 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
  *
  * @ingroup eneon
  */
-function eneon_issue_wizard_issue_metadata($form, &$form_state) {
+function eneon_issue_wizard_metadata($form, &$form_state) {
   $form = array();
   $form['first_name'] = array(
     '#type' => 'textfield',
@@ -243,35 +240,46 @@ function eneon_issue_wizard_issue_metadata($form, &$form_state) {
 /**
  * Returns form elements for the 'location info' page of the wizard.
  *
- * This is the second step of the wizard. This step asks for a textfield value:
- * a City. This step also includes a validation declared later.
+ * This is the second step of the wizard. This step suggests networks
+ * based on the metadata (e.g. SBAs, themes) set in the previous step.
  *
  * @ingroup eneon
  */
-function eneon_issue_wizard_issue_network_suggestions($form, &$form_state) {
+function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $form = array();
-  $form['city'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
-    '#description' => t('Hint: Do not enter "San Francisco", and do not leave this out.'),
-    '#required' => TRUE,
-    '#default_value' => !empty($form_state['values']['city']) ? $form_state['values']['city'] : '',
 
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+
+  // TODO perform network query based on stored metadata (chosen SBA/themes)
+  // TODO always show selected networks (even they do not match actual query)
+
+  $options = array();
+  $all_sbas = eneon_get_sbas_like();
+  foreach ($all_sbas as $sba) {
+    $options[$sba->tid] = $sba->name;
+  }
+  $form['sbas'] = array (
+      '#title' => t('Social Benefit Areas'),
+	   	'#type' => 'select',
+  		'#multiple' => TRUE,
+      '#options' => $options,
+  		'#description' => t('This is some full text'),
+  		'#required' => TRUE,
   );
+  $form['fieldset_eneon_proposed_networks'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Proposed Networks'),
+  );
+
   return $form;
 }
 
 /**
- * Custom validation form for the 'location info' page of the wizard.
- *
- * This is the validation function for the second step of the wizard.
- * The city cannot be empty or be "San Francisco".
- *
- * @ingroup eneon
+ * Implements hook_STEP-CALLBACK_validate()
  */
-function eneon_issue_wizard_issue_network_suggestions_validate($form, &$form_state) {
   if ($form_state['values']['city'] == 'San Francisco') {
     form_set_error('city', t('You were warned not to enter "San Francisco"'));
+function eneon_issue_wizard_network_suggestions_validate($form, &$form_state) {
   }
 }
 
