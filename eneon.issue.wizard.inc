@@ -224,16 +224,43 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
  */
 function eneon_issue_wizard_metadata($form, &$form_state) {
   $form = array();
-  $form['first_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('First Name'),
-    '#default_value' => !empty($form_state['values']['first_name']) ? $form_state['values']['first_name'] : '',
+
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
+
+  $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
+  $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
+
+  // TODO add selected_sbas list to entity
+  $selected_sbas = !empty($form_state['values']['selected_sbas']) ? $form_state['values']['selected_sbas'] : array(); //$wrapper->selected_sbas->value();
+
+  $form['title'] = array(
+      '#title' => t('Title'),
+      '#type' => 'textfield',
+      '#default_value' => $title_value,
+      '#required' => TRUE,
   );
-  $form['last_name'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Last Name'),
-    '#default_value' => !empty($form_state['values']['last_name']) ? $form_state['values']['last_name'] : '',
+  $form['description'] = array(
+      '#title' => t('Issue description'),
+      '#type' => 'textarea',
+      '#default_value' => $description_value,
+      '#required' => TRUE,
   );
+
+  $options = array();
+  $all_sbas = eneon_get_sbas_like();
+  foreach ($all_sbas as $sba) {
+    $options[$sba->tid] = $sba->name;
+  }
+  $form['sbas'] = array (
+      '#title' => t('Sociatal Benefit Areas'),
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#options' => $options,
+      '#default_value' => $selected_sbas,
+      '#description' => t('Sociatal Benefit Areas your issue may be referring to.'),
+  );
+
   return $form;
 }
 
@@ -249,23 +276,11 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $form = array();
 
   $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
 
   // TODO perform network query based on stored metadata (chosen SBA/themes)
   // TODO always show selected networks (even they do not match actual query)
 
-  $options = array();
-  $all_sbas = eneon_get_sbas_like();
-  foreach ($all_sbas as $sba) {
-    $options[$sba->tid] = $sba->name;
-  }
-  $form['sbas'] = array (
-      '#title' => t('Social Benefit Areas'),
-	   	'#type' => 'select',
-  		'#multiple' => TRUE,
-      '#options' => $options,
-  		'#description' => t('This is some full text'),
-  		'#required' => TRUE,
-  );
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
       '#title' => t('Proposed Networks'),
@@ -277,9 +292,9 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 /**
  * Implements hook_STEP-CALLBACK_validate()
  */
-  if ($form_state['values']['city'] == 'San Francisco') {
-    form_set_error('city', t('You were warned not to enter "San Francisco"'));
 function eneon_issue_wizard_network_suggestions_validate($form, &$form_state) {
+  if (!isset($form_state['values']['selected_networks']) || $form_state['values']['selected_networks'] == 0) {
+    form_set_error('fieldset_eneon_proposed_networks', t('You haven\'t selected any network!"'));
   }
 }
 
