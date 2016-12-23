@@ -37,6 +37,9 @@
 
 // TODO remove comments from example
 
+
+require_once 'includes/eneon.common.inc';
+
 /**
  * Returns the list of steps and their associated forms.
  *
@@ -230,7 +233,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
-  $selected_sbas = !empty($form_state['values'][ENEON_ISSUE_SELECTED_SBAS]) ? $form_state['values'][ENEON_ISSUE_SELECTED_SBAS] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
+  $selected_sbas = !empty($form_state['values']['sbas']) ? $form_state['values']['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
 
   $form['title'] = array(
       '#title' => t('Title'),
@@ -250,7 +253,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
   foreach ($all_sbas as $sba) {
     $options[$sba->tid] = $sba->name;
   }
-  $form['sba_selection'] = array (
+  $form['sbas'] = array (
       '#title' => t('Sociatal Benefit Areas'),
       '#type' => 'select',
       '#multiple' => TRUE,
@@ -273,11 +276,20 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
 function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $form = array();
 
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
+  $current_step = &$form_state['step'];
+  $values_previous_step = $form_state['step_information'][$current_step - 1]['stored_values'];
 
   $filter = array();
-  $filter['sbas'] = !empty($form_state['values'][ENEON_ISSUE_SELECTED_SBAS]) ? $form_state['values'][ENEON_ISSUE_SELECTED_SBAS] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
+  $filter['sbas'] = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : array();
+
+  $networks = array();
+  $tmp_networks = eneon_network_query($filter);
+  if (eneon_not_empty_array($tmp_networks)) {
+    $networks = array_map("unserialize", array_unique(array_map("serialize", array_merge($networks, $tmp_networks))));
+    // array is sorted on the bases of id
+    sort($networks);
+  }
+
   // TODO perform network query based on stored metadata (chosen SBA/themes)
   // TODO always show selected networks (even they do not match actual query)
 
