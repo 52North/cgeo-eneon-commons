@@ -39,12 +39,13 @@ define('ENEON_ENTITY_ISSUE', 'eneon_issue');
 define('ENEON_TABLE_ISSUES', 'eneon_issues');
 define('ENEON_PATH_ISSUES', 'issues');
 
+define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
 
 /**
  * field constants
  */
 //
-define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
+define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
 define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
 
 define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
@@ -224,6 +225,11 @@ function eneon_issue_entity_property_info() {
                   'type' => 'text',
                   'schema field' => 'description',
               ),
+//               'selected_sbas' => array(
+//                   'label' => t('Selected SBAs'),
+//                   'type' => 'list<' . taxonomy_term_reference . '>',
+//                   'description' => t('Selected SBAs related to this issue'),
+//               ),
 //               'networks' => array(
 //                   'label' => t('Related networks'),
 //                   'type' => 'list<' . ENEON_ENTITY_NETWORK . '>',
@@ -267,7 +273,7 @@ function eneon_network_entity_property_info() {
                   'type' => 'text',
                   'schema field' => 'description',
               ),
-//               'ENEON_NETWORK_SBA_REFERENCE' => array(
+//               ENEON_NETWORK_SBA_REFERENCE => array(
 //                   'label' => t('Network SBA reference'),
 //                   'description' => t('SBA references of the network.'),
 //                   'type' => 'text',

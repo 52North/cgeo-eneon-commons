@@ -82,7 +82,7 @@ function eneon_update_networks() {
 
       // Add additional attributes
       $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
-      $existing_relations = $wrapper->network_sba_reference->value();
+      $existing_relations = $wrapper->network_sba_ref->value();
 
       $related_sbas = eneon_get_sbas_like($sbas);
       foreach($related_sbas as $related_sba) {
@@ -90,7 +90,7 @@ function eneon_update_networks() {
           $existing_relations[] = $related_sba;
         }
       }
-      $wrapper->network_sba_reference->set($existing_relations);
+      $wrapper->network_sba_ref->set($existing_relations);
       $wrapper->save();
     }
   }
@@ -155,7 +155,7 @@ function eneon_network_query($filter=array()) {
   if (eneon_not_empty_array($sbas)) {
     $nids = db_select(ENEON_TABLE_NETWORK_SBA_REFERENCE, 'r')
         ->fields('r', array('entity_id'))
-        ->condition('r.network_sba_reference_target_id', $sbas, 'IN')
+        ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_target_id', $sbas, 'IN')
         ->execute()
         ->fetchCol();
   }
