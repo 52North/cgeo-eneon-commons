@@ -50,6 +50,7 @@ then
 else
   drush -y en $modules eneon
   drush -y pm-disable overlay
+  drush vset theme_debug 1
   drush cc all
   drush cron
   touch /var/www/html/sites/default/files/eneon_networks.json
