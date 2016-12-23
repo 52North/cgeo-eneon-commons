@@ -84,11 +84,11 @@ function eneon_menu() {
       'page callback' => 'drupal_get_form',
       'page arguments' => array('eneon_issue_wizard'),
       'access arguments' => array('access content'),
-        'file' => 'eneon.issue.wizard.inc',
+      'file' => 'eneon.issue.wizard.inc',
 //       'page callback' => 'eneon_add_entity_item',
 //       'page arguments' => array(ENEON_ENTITY_ISSUE),
 //       'file' => 'eneon.pages.inc',
-//       'type' => MENU_LOCAL_TASK,
+      'type' => MENU_LOCAL_TASK,
   );
   $items[$autoload_issue_wildcard] = array(
       'title' => t('Issue'),
@@ -105,10 +105,12 @@ function eneon_menu() {
   $items[$autoload_issue_wildcard . '/edit'] = array(
       'title' => 'Edit issue',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('eneon_issue_form', 1),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.issue.ui.inc',
-      'type' => MENU_LOCAL_TASK,
+      'file' => 'eneon.issue.wizard.inc',
+      'page arguments' => array('eneon_issue_wizard', 1),
+//       'access arguments' => array('access content'),
+//       'page arguments' => array('eneon_issue_form', 1),
+//       'access arguments' => array('access content'),
+//       'file' => 'eneon.issue.ui.inc',
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
   );
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
