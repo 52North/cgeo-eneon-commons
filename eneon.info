@@ -32,6 +32,8 @@ package = "52N - CGEO"
 core = "7.x"
 version = "7.x-1.0"
 
+stylesheets[all][] = css/eneon.css
+
 files[] = includes/eneon.common.inc
 files[] = includes/eneon.network.controller.inc
 files[] = eneon.issue.ui.inc
