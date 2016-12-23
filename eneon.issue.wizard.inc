@@ -29,8 +29,13 @@
  * - The most important customization step is to change the submit handler and
  *   do whatever you want with the collected information. In this case, the
  *   example just shows the collected values in the various steps.
- * @ingroup form_example
+ * @ingroup eneon
  */
+
+// skeleton taken from form_example module in Drupal's examples:
+//   https://www.drupal.org/project/examples
+
+// TODO remove comments from example
 
 /**
  * Returns the list of steps and their associated forms.
@@ -42,7 +47,7 @@
  * @return array
  *   List of steps and their forms.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function _eneon_issue_wizard_steps() {
   return array(
@@ -76,7 +81,7 @@ function _eneon_issue_wizard_steps() {
  * change the eneon_issue_wizard_submit handler to perform the operations you
  * need on the collected information.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard($form, &$form_state) {
 
@@ -151,7 +156,7 @@ function eneon_issue_wizard($form, &$form_state) {
  *
  * You are not required to change this function.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_previous_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
@@ -175,7 +180,7 @@ function eneon_issue_wizard_previous_submit($form, &$form_state) {
  *
  * You are not required to change this function.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_next_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
@@ -204,16 +209,17 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
  * the form.
  *
  * First, let's show the defined steps for the wizard example.
- * @ingroup form_example
+ * @ingroup eneon
  */
 
 /**
- * Returns form elements for the 'personal info' page of the wizard.
+ * Returns form elements for the 'issue metadata' page of the wizard.
  *
- * This is the first step of the wizard, asking for two textfields: first name
- * and last name.
+ * This is the first step of the wizard, asking for: title, description
+ * and metainfos (like SBAs, themes) which is taken to suggest networks
+ * in the following step.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_issue_metadata($form, &$form_state) {
   $form = array();
@@ -236,7 +242,7 @@ function eneon_issue_wizard_issue_metadata($form, &$form_state) {
  * This is the second step of the wizard. This step asks for a textfield value:
  * a City. This step also includes a validation declared later.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_issue_network_suggestions($form, &$form_state) {
   $form = array();
@@ -257,7 +263,7 @@ function eneon_issue_wizard_issue_network_suggestions($form, &$form_state) {
  * This is the validation function for the second step of the wizard.
  * The city cannot be empty or be "San Francisco".
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_issue_network_suggestions_validate($form, &$form_state) {
   if ($form_state['values']['city'] == 'San Francisco') {
@@ -270,7 +276,7 @@ function eneon_issue_wizard_issue_network_suggestions_validate($form, &$form_sta
  *
  * This is the third and last step of the example wizard.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_other_info($form, &$form_state) {
   $form = array();
@@ -295,7 +301,7 @@ function eneon_issue_wizard_other_info($form, &$form_state) {
  * This demonstration handler just do a drupal_set_message() with the
  * information collected on each different step of the wizard.
  *
- * @ingroup form_example
+ * @ingroup eneon
  */
 function eneon_issue_wizard_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
