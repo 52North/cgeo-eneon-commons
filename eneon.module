@@ -82,7 +82,7 @@ function eneon_menu() {
   $items[ENEON_PATH_ISSUES . '/add'] = array(
       'title' => t('Add issue'),
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('form_example_wizard'),
+      'page arguments' => array('eneon_issue_wizard'),
       'access arguments' => array('access content'),
         'file' => 'eneon.issue.wizard.inc',
 //       'page callback' => 'eneon_add_entity_item',

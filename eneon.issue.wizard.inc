@@ -17,10 +17,10 @@
  * each step having its own validation functions.
  *
  * How to extend this example:
- * - Steps are defined in the _form_example_steps() function. Include or alter
+ * - Steps are defined in the _eneon_issue_steps() function. Include or alter
  *   the steps as you require.
  * - For each step, implement the corresponding 'form' function (see
- *   'form_example_wizard_personal_info' for the first step in this example.)
+ *   'eneon_issue_wizard_personal_info' for the first step in this example.)
  *   Each step is a regular form, and the wizard collects all the values of the
  *   included forms.
  * - Optionally, you may include custom validation functions using the regular
@@ -44,17 +44,17 @@
  *
  * @ingroup form_example
  */
-function _form_example_steps() {
+function _eneon_issue_wizard_steps() {
   return array(
     1 => array(
-      'form' => 'form_example_wizard_personal_info',
+      'form' => 'eneon_issue_wizard_personal_info',
     ),
     2 => array(
-      'form' => 'form_example_wizard_location_info',
+      'form' => 'eneon_issue_wizard_location_info',
     ),
-    3 => array(
-      'form' => 'form_example_wizard_other_info',
-    ),
+//     3 => array(
+//       'form' => 'eneon_issue_wizard_other_info',
+//     ),
   );
 }
 
@@ -73,12 +73,12 @@ function _form_example_steps() {
  * handler used to process the information.
  *
  * You are not required to change the next or previous handlers, but you must
- * change the form_example_wizard_submit handler to perform the operations you
+ * change the eneon_issue_wizard_submit handler to perform the operations you
  * need on the collected information.
  *
  * @ingroup form_example
  */
-function form_example_wizard($form, &$form_state) {
+function eneon_issue_wizard($form, &$form_state) {
 
   // Initialize a description of the steps for the wizard.
   if (empty($form_state['step'])) {
@@ -87,7 +87,7 @@ function form_example_wizard($form, &$form_state) {
     // This array contains the function to be called at each step to get the
     // relevant form elements. It will also store state information for each
     // step.
-    $form_state['step_information'] = _form_example_steps();
+    $form_state['step_information'] = _eneon_issue_wizard_steps();
   }
   $step = &$form_state['step'];
   drupal_set_title(t('Extensible Wizard: Step @step', array('@step' => $step)));
@@ -106,7 +106,7 @@ function form_example_wizard($form, &$form_state) {
       '#type' => 'submit',
       '#value' => t('Previous'),
       '#name' => 'prev',
-      '#submit' => array('form_example_wizard_previous_submit'),
+      '#submit' => array('eneon_issue_wizard_previous_submit'),
       '#limit_validation_errors' => array(),
     );
   }
@@ -118,14 +118,14 @@ function form_example_wizard($form, &$form_state) {
       '#type' => 'submit',
       '#value' => t('Next'),
       '#name' => 'next',
-      '#submit' => array('form_example_wizard_next_submit'),
+      '#submit' => array('eneon_issue_wizard_next_submit'),
     );
   }
   else {
     // Just in case there are no more steps, we use the default submit handler
     // of the form wizard. Call this button Finish, Submit, or whatever you
     // want to show. When this button is clicked, the
-    // form_example_wizard_submit handler will be called.
+    // eneon_issue_wizard_submit handler will be called.
     $form['finish'] = array(
       '#type' => 'submit',
       '#value' => t('Finish'),
@@ -153,7 +153,7 @@ function form_example_wizard($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_previous_submit($form, &$form_state) {
+function eneon_issue_wizard_previous_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['input'];
   if ($current_step > 1) {
@@ -177,7 +177,7 @@ function form_example_wizard_previous_submit($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_next_submit($form, &$form_state) {
+function eneon_issue_wizard_next_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
@@ -198,7 +198,7 @@ function form_example_wizard_next_submit($form, &$form_state) {
 /**
  * The previous code was a 'skeleton' of a multistep wizard form. You are not
  * required to change a line on the previous code (apart from defining your own
- * steps in the _form_example_steps() function.
+ * steps in the _eneon_issue_steps() function.
  *
  * All the code included from here is the content of the wizard, the steps of
  * the form.
@@ -215,7 +215,7 @@ function form_example_wizard_next_submit($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_personal_info($form, &$form_state) {
+function eneon_issue_wizard_personal_info($form, &$form_state) {
   $form = array();
   $form['first_name'] = array(
     '#type' => 'textfield',
@@ -238,7 +238,7 @@ function form_example_wizard_personal_info($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_location_info($form, &$form_state) {
+function eneon_issue_wizard_location_info($form, &$form_state) {
   $form = array();
   $form['city'] = array(
     '#type' => 'textfield',
@@ -259,7 +259,7 @@ function form_example_wizard_location_info($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_location_info_validate($form, &$form_state) {
+function eneon_issue_wizard_location_info_validate($form, &$form_state) {
   if ($form_state['values']['city'] == 'San Francisco') {
     form_set_error('city', t('You were warned not to enter "San Francisco"'));
   }
@@ -272,7 +272,7 @@ function form_example_wizard_location_info_validate($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_other_info($form, &$form_state) {
+function eneon_issue_wizard_other_info($form, &$form_state) {
   $form = array();
   $form['aunts_name'] = array(
     '#type' => 'textfield',
@@ -297,7 +297,7 @@ function form_example_wizard_other_info($form, &$form_state) {
  *
  * @ingroup form_example
  */
-function form_example_wizard_submit($form, &$form_state) {
+function eneon_issue_wizard_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
