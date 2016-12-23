@@ -84,8 +84,8 @@ function eneon_view_entity_item($entity) {
  * @param type $entity_type the entity type
  * @return The entity's edit form
  */
-function eneon_add_entity_item($entity_type) {
-  drupal_set_title(t('Add new ' . entity_get_info($entity_type)['label']));
-  $entity = entity_create($entity_type, array());
-  return entity_ui_get_form($entity_type, $entity);
-}
+// function eneon_add_entity_item($entity_type) {
+//   drupal_set_title(t('Add new ' . entity_get_info($entity_type)['label']));
+//   $entity = entity_create($entity_type, array());
+//   return entity_ui_get_form($entity_type, $entity);
+// }

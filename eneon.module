@@ -81,11 +81,14 @@ function eneon_menu() {
   );
   $items[ENEON_PATH_ISSUES . '/add'] = array(
       'title' => t('Add issue'),
-      'page callback' => 'eneon_add_entity_item',
-      'page arguments' => array(ENEON_ENTITY_ISSUE),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('form_example_wizard'),
       'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-      'type' => MENU_LOCAL_TASK,
+        'file' => 'eneon.issue.wizard.inc',
+//       'page callback' => 'eneon_add_entity_item',
+//       'page arguments' => array(ENEON_ENTITY_ISSUE),
+//       'file' => 'eneon.pages.inc',
+//       'type' => MENU_LOCAL_TASK,
   );
   $items[$autoload_issue_wildcard] = array(
       'title' => t('Issue'),
