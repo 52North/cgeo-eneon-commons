@@ -6,7 +6,7 @@ MAINTAINER Henning Bredel <h.bredel@52north.org>
 
 
 RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -qq -y apt-utils
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y drush wget mysql-client \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -qq -y drush wget patch mysql-client \
 	## Install needed drush dependencies
 	&& pear install --alldeps Console_table \
 	## Install xDebug
@@ -32,6 +32,10 @@ RUN echo "" >> /usr/local/etc/php/php.ini \
 	&& echo "xdebug.scream = 0" >> /usr/local/etc/php/php.ini \
 	&& echo "xdebug.show_local_vars = 1" >> /usr/local/etc/php/php.ini \
 	&& echo "xdebug.idekey = ECLIPSE_DBGP" >> /usr/local/etc/php/php.ini
+
+COPY config/patches /tmp/patches
+# https://www.drupal.org/node/2128265#comment-10973443 
+RUN patch -p1 -i /tmp/patches/2128265.patch
 
 COPY config/launch.sh /usr/local/bin/startup
 
