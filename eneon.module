@@ -51,14 +51,11 @@ define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_RE
 define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
 define('ENEON_TABLE_ISSUE_SELECTED_SBAS', 'field_data_' . ENEON_ISSUE_SELECTED_SBAS);
 
-define('ENEON_PATH_NETWORKS_AJAX', ENEON_PATH_NETWORKS . '/ajax');
 
 /**
  * Implements hook_init()
  */
 function eneon_init() {
-	drupal_add_js(array('eneon' => array('ajaxUrl' => url(ENEON_PATH_NETWORKS_AJAX))), 'setting');
-
 // comment in for debug
 //   module_load_include('inc', 'eneon', 'includes/eneon.common');
 //   eneon_update_networks();
@@ -71,13 +68,6 @@ function eneon_menu() {
 
   $autoload_issue_wildcard = ENEON_PATH_ISSUES . '/%' . ENEON_ENTITY_ISSUE;
   $autoload_network_wildcard = ENEON_PATH_NETWORKS . '/%' . ENEON_ENTITY_NETWORK;
-
-  $items[ENEON_PATH_NETWORKS_AJAX] = array(
-  		'type' => MENU_CALLBACK,
-  		'page callback' => 'eneon_network_ajax',
-  		'access arguments' => array('access content'),
-      'file' => 'includes/eneon.network.ajax.inc',
-  );
 
   $items[ENEON_PATH_ISSUES] = array(
       'title' => t('Issues'),
