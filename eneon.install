@@ -56,9 +56,6 @@ function eneon_install() {
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'type' => 'entityrefertaxonomy_term_referenceence',
       'type' => taxonomy_term_reference,
-//       'settings' => array(
-//           'target_type' => 'taxonomy_term', //ENEON_VOCAB_BUNDLE_SBA,
-//       ),
       'cardinality' => -1, // unlimited
       'translatable' => FALSE,
   );
@@ -74,8 +71,8 @@ function eneon_install() {
 //           'full' => array( 'type' => 'taxonomy_term_reference_link', ),
 //           'teaser' => array( 'type' => 'hidden', ),
         ),
-      );
-          field_create_instance($instance);
+  );
+  field_create_instance($instance);
 
   $issue_selected_sbas = array(
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
