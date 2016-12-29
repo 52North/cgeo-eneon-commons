@@ -85,7 +85,8 @@ function _eneon_issue_wizard_steps() {
  */
 function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
 
-  $form_state[ENEON_ENTITY_ISSUE] = !isset($entity)
+  $create_new = !isset($entity);
+  $form_state[ENEON_ENTITY_ISSUE] = $create_new
       ? entity_create(ENEON_ENTITY_ISSUE, array())
       : $entity;
 
@@ -99,7 +100,10 @@ function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
     $form_state['step_information'] = _eneon_issue_wizard_steps();
   }
   $step = &$form_state['step'];
-  drupal_set_title(t('Create Issue: Step @step', array('@step' => $step)));
+  $title = $create_new
+      ? t('Create Issue: Step @step', array('@step' => $step))
+      : t('Edit Issue: Step @step', array('@step' => $step));
+  drupal_set_title($title);
 
   // Call the function named in $form_state['step_information'] to get the
   // form elements to display for this step.
@@ -322,15 +326,6 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 }
 
 /**
- * Implements hook_STEP-CALLBACK_validate()
- */
-function eneon_issue_wizard_network_suggestions_validate($form, &$form_state) {
-  if (!isset($form_state['values']['selected_networks']) || $form_state['values']['selected_networks'] == 0) {
-    form_set_error('fieldset_eneon_proposed_networks', t('You haven\'t selected any network!"'));
-  }
-}
-
-/**
  * Wizard form submit handler.
  *
  * This function:
@@ -346,28 +341,30 @@ function eneon_issue_wizard_network_suggestions_validate($form, &$form_state) {
  * @ingroup eneon
  */
 function eneon_issue_wizard_submit($form, &$form_state) {
+  $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
+    $step_values = $form_state['step_information'][$step_nr];
+    return isset($step_values['stored_values'][$name])
+        ? $step_values['stored_values'][$name]
+        : $default;
+  };
+
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
-  // In this case we've completed the final page of the wizard, so process the
-  // submitted information.
-  drupal_set_message(t('This information was collected by this wizard:'));
-  foreach ($form_state['step_information'] as $index => $value) {
-    // Remove FAPI fields included in the values (form_token, form_id and
-    // form_build_id. This is not required, you may access the values using
-    // $value['stored_values'] but I'm removing them to make a more clear
-    // representation of the collected information as the complete array will
-    // be passed through drupal_set_message().
-    unset($value['stored_values']['form_id']);
-    unset($value['stored_values']['form_build_id']);
-    unset($value['stored_values']['form_token']);
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  //     entity_form_submit_build_entity(ENEON_ENTITY_ISSUE, $entity, $form, $form_state);
+  $entity->is_new_revision = TRUE;
 
-    // Now show all the values.
-    drupal_set_message(t('Step @num collected the following values: <pre>@result</pre>',
-      array(
-        '@num' => $index,
-        '@result' => print_r($value['stored_values'], TRUE),
-      )
-    ));
-  }
+  $wrapper = $entity->wrapper();
+  $wrapper->title->set($form_value('title', 1));
+  $wrapper->description->set($form_value('description', 1));
+  $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
+  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($form_value('networks', 2, array()));
+  $wrapper->save();
+
+  drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
+
+  // Redirect user to edited entity page.
+  $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
+  $form_state['redirect'] = $entity_uri['path'];
 }

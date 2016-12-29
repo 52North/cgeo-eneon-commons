@@ -84,7 +84,6 @@ function eneon_install() {
       'cardinality' => 8,
   );
   field_create_field($issue_selected_sbas);
-
   $issue_selected_sbas_instance = array(
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
       'entity_type' => ENEON_ENTITY_ISSUE,
@@ -93,6 +92,22 @@ function eneon_install() {
       'bundle' => ENEON_ENTITY_ISSUE,
   );
   field_create_instance($issue_selected_sbas_instance);
+
+  $issue_selected_networks = array(
+      'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
+      'type' => 'list_integer',
+      'translatable' => FALSE,
+      'cardinality' => -1,
+  );
+  field_create_field($issue_selected_networks);
+  $issue_selected_networks_instance = array(
+      'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
+      'entity_type' => ENEON_ENTITY_NETWORK,
+      'label' => 'Selected Networks',
+      'required' => FALSE,
+      'bundle' => ENEON_ENTITY_ISSUE,
+  );
+  field_create_instance($issue_selected_networks_instance);
 }
 /**
  * Implements hook_uninstall().
