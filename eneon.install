@@ -72,12 +72,7 @@ function eneon_enable() {
  * Implements hook_disable)
  */
 function eneon_disable() {
-//   if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_NETWORK_SBA_REFERENCE, ENEON_BUNDLE_NETWORK)) {
-  if ($instance = field_info_instance(ENEON_ENTITY_NETWORK, ENEON_NETWORK_SBA_REFERENCE, ENEON_ENTITY_NETWORK)) {
-    field_delete_instance($instance);
-  }
-  field_delete_field(ENEON_TABLE_NETWORK_SBA_REFERENCE);
-
+  eneon_uninstall();
 }
 /**
  * Implements hook_install()
@@ -117,11 +112,9 @@ function eneon_uninstall() {
     taxonomy_vocabulary_delete($vocab->vid);
   }
 
-  if ($instance = field_info_instance(ENEON_ENTITY_ISSUE, ENEON_ISSUE_SELECTED_SBAS, ENEON_ENTITY_ISSUE)) {
-    field_delete_instance($instance);
-  }
+  field_delete_field(ENEON_NETWORK_SBA_REFERENCE);
+  field_delete_field(ENEON_ISSUE_SELECTED_NETWORKS);
   field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
-
 }
 
 /**

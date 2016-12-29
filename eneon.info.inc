@@ -59,6 +59,12 @@ function eneon_entity_property_info() {
               'setter callback' => 'entity_property_verbatim_set',
               'schema field' => 'description',
           ),
+          ENEON_ISSUE_SELECTED_NETWORKS => array(
+              'label' => t('Issue selected networks'),
+              'description' => t('Selected networks related to this issue.'),
+              'type' => 'list<' . ENEON_ENTITY_NETWORK . '>',
+              'setter callback' => 'entity_property_verbatim_set',
+          ),
       ),
   );
 
@@ -81,6 +87,12 @@ function eneon_entity_property_info() {
               'description' => t('Description of the network.'),
               'type' => 'text',
               'schema field' => 'description',
+          ),
+          ENEON_NETWORK_SBA_REFERENCE => array(
+              'label' => t('Network selected SBAs'),
+              'description' => t('Selected SBAs related to this issue.'),
+              'type' => 'list<taxonomy_term_reference>',
+              'setter callback' => 'entity_property_verbatim_set',
           ),
       ),
   );

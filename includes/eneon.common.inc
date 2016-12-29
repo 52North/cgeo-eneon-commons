@@ -153,7 +153,7 @@ function eneon_network_query($filter=array()) {
   $nids = array();
 
   if (eneon_not_empty_array($sbas)) {
-    $nids = db_select(ENEON_TABLE_NETWORK_SBA_REFERENCE, 'r')
+    $nids = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
         ->fields('r', array('entity_id'))
         ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_target_id', $sbas, 'IN')
         ->execute()

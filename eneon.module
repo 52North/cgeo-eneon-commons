@@ -41,16 +41,9 @@ define('ENEON_PATH_ISSUES', 'issues');
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
 
-/**
- * field constants
- */
-//
-define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
-define('ENEON_TABLE_NETWORK_SBA_REFERENCE', 'field_data_' . ENEON_NETWORK_SBA_REFERENCE);
-
 define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
-define('ENEON_TABLE_ISSUE_SELECTED_SBAS', 'field_data_' . ENEON_ISSUE_SELECTED_SBAS);
-
+define('ENEON_ISSUE_SELECTED_NETWORKS', 'selected_networks');
+define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
 
 /**
  * Implements hook_init()
