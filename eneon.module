@@ -27,7 +27,6 @@
  * Public License for more details.
  */
 
-require_once 'eneon.issue.ui.inc';
 require_once 'includes/eneon.issue.controller.inc';
 require_once 'includes/eneon.network.controller.inc';
 
