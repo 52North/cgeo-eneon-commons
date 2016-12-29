@@ -27,6 +27,7 @@
  * Public License for more details.
  */
 
+require_once 'eneon.info.inc';
 require_once 'includes/eneon.issue.controller.inc';
 require_once 'includes/eneon.network.controller.inc';
 
@@ -97,9 +98,10 @@ function eneon_menu() {
   $items[$autoload_issue_wildcard . '/edit'] = array(
       'title' => 'Edit issue',
       'page callback' => 'drupal_get_form',
-      'file' => 'eneon.issue.wizard.inc',
+      'access arguments' => array('access content'),
       'page arguments' => array('eneon_issue_wizard', 1),
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+      'file' => 'eneon.issue.wizard.inc',
   );
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
   $items[$autoload_issue_wildcard . '/delete'] = array(
@@ -176,79 +178,6 @@ function eneon_issue_access_callback($op, $issue = NULL, $account = NULL) {
     return FALSE;
   }
 }
-
-/**
- * Implements hook_entity_property_info().
- */
-function eneon_issue_entity_property_info() {
-
-  // TODO more infos at
-  //  https://www.drupal.org/node/1021466
-  //  http://wolfgangziegler.net/introducing_entity_metadata
-
-  return array(
-      'issue' => array(
-          'properties' => array(
-              'id' => array(
-                  'label' => t('Issue ID'),
-                  'description' => t('The ID of the issue.'),
-                  'type' => 'integer',
-                  'schema field' => 'id',
-              ),
-              'title' => array(
-                  'label' => t('Issue title'),
-                  'description' => t('Title of the issue.'),
-                  'type' => 'text',
-                  'schema field' => 'title',
-               ),
-              'description' => array(
-                  'label' => t('Issue description'),
-                  'description' => t('Description of the issue.'),
-                  'type' => 'text',
-                  'schema field' => 'description',
-              ),
-          ),
-      ),
-  );
-  return $info;
-}
-
-/**
- * Implements hook_entity_property_info().
- */
-function eneon_network_entity_property_info() {
-
-  // TODO more infos at
-  //  https://www.drupal.org/node/1021466
-  //  http://wolfgangziegler.net/introducing_entity_metadata
-
-  return array(
-      'network' => array(
-          'properties' => array(
-              'id' => array(
-                  'label' => t('Network ID'),
-                  'description' => t('The ID of the network.'),
-                  'type' => 'integer',
-                  'schema field' => 'id',
-              ),
-              'title' => array(
-                  'label' => t('Network title'),
-                  'description' => t('Title of the network.'),
-                  'type' => 'text',
-                  'schema field' => 'title',
-              ),
-              'description' => array(
-                  'label' => t('Network description'),
-                  'description' => t('Description of the network.'),
-                  'type' => 'text',
-                  'schema field' => 'description',
-              ),
-          ),
-      ),
-  );
-  return $info;
-}
-
 function eneon_network_load($id = NULL, $reset = FALSE) {
   $entities = eneon_network_load_multiple(array ($id), $reset);
   return reset($entities);
