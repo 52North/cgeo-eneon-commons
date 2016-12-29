@@ -54,6 +54,15 @@ function eneon_update_networks() {
   $sba_vocab = taxonomy_vocabulary_machine_name_load(ENEON_VOCAB_BUNDLE_SBA);
 
   $networks = $eneon_graph['network'];
+
+  /*
+   * Some networks refer to 'All' SBAs so we have to iterate through
+   * all SBAs referenced in the network
+   *
+   * TODO probably its better to define them directly as constants?!
+   */
+
+  // first iteration creates all SBAs
   foreach ($networks as $network) {
     if (! isset($network ['id']) || ! isset($network ['title'])) {
       continue;
@@ -72,6 +81,13 @@ function eneon_update_networks() {
         taxonomy_term_save($term);
       }
     }
+  }
+
+  // second iteration creates all networks
+  foreach ($networks as $network) {
+    if (! isset($network ['id']) || ! isset($network ['title'])) {
+      continue;
+    }
 
     $entity = eneon_create_or_load_network($network);
 
@@ -82,19 +98,25 @@ function eneon_update_networks() {
 
       // Add additional attributes
       $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
-      $existing_relations = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
-
-      $related_sbas = eneon_get_sbas_like($sbas);
-      foreach($related_sbas as $related_sba) {
-        if ( !in_array($related_sba, $existing_relations)) {
-          $existing_relations[] = $related_sba;
-        }
-      }
-      $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->set($existing_relations);
+      eneon_add_sba_references($wrapper, $network);
       $wrapper->save();
     }
   }
   drupal_set_message($message = t('"eneon" module: imported #@count networks.', array('@count' => sizeof($networks))), $type = 'status');
+}
+
+function eneon_add_sba_references($wrapper, $network) {
+  $sba_relations = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
+
+  $sbas = isset($network ['SBA']) ? $network ['SBA'] : array();
+  $sbas = in_array('All', $sbas) ? array('*') : $sbas;
+  $sba_terms = eneon_get_sbas_like($sbas);
+  foreach($sba_terms as $sba_term) {
+    if ( !in_array($sba_term, $sba_relations)) {
+      $sba_relations[] = $sba_term;
+    }
+  }
+  $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->set($sba_relations);
 }
 
 function eneon_get_sbas_like($filters=array('*')) {
@@ -155,7 +177,7 @@ function eneon_network_query($filter=array()) {
   if (eneon_not_empty_array($sbas)) {
     $nids = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
         ->fields('r', array('entity_id'))
-        ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_target_id', $sbas, 'IN')
+        ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
         ->execute()
         ->fetchCol();
   }
