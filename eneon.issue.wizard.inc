@@ -294,7 +294,6 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
     sort($networks);
   }
 
-
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
       '#title' => t('Proposed Networks'),
@@ -352,7 +351,12 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $wrapper->title->set($form_value('title', 1));
   $wrapper->description->set($form_value('description', 1));
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
-  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($form_value('suggested_networks', 2, array()));
+
+  // TODO remember only selected networks
+
+  $network_checkbox_states = $form_value('suggested_networks', 2, array());
+  $selected_networks = array_filter($network_checkbox_states, function($item) { return $item != 0; });
+  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($selected_networks);
   $wrapper->save();
 
   drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
@@ -361,3 +365,4 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
   $form_state['redirect'] = $entity_uri['path'];
 }
+
