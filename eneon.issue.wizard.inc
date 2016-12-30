@@ -308,18 +308,11 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   if (eneon_not_empty_array($networks)) {
     $suggested_networks = array();
     foreach ($networks as $network) {
-      $suggested_networks[] = array(
-//       $form['fieldset_eneon_proposed_networks']['suggested-network-' . $network->id] = array(
-          '#type' => 'checkbox',
-          '#title' => $network->title,
-          '#prefix' => '<li id="eneon-suggested-network-' . $network->id . '">',
-          '#suffix' => '</li>',
-      );
+      $suggested_networks[$network->id] = $network->title;
     }
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
-        '#prefix' => '<ul>',
-        '#suffix' => '</ul>',
-        '#markup' => drupal_render($suggested_networks),
+        '#type' => 'checkboxes',
+        '#options' => $suggested_networks,
     );
   }
   return $form;
@@ -359,7 +352,7 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $wrapper->title->set($form_value('title', 1));
   $wrapper->description->set($form_value('description', 1));
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
-  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($form_value('networks', 2, array()));
+  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($form_value('suggested_networks', 2, array()));
   $wrapper->save();
 
   drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
