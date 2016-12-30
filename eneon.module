@@ -138,7 +138,6 @@ function eneon_entity_info() {
           'entity class' => 'IssueEntity',
           'controller class' => 'IssueEntityController',
           'views controller class' => 'EntityDefaultViewsController',
-          'label callback' => 'entity_class_label',
           'uri callback' => 'entity_class_uri',
           'label callback' => 'entity_class_label',
           'module' => 'eneon'
@@ -164,6 +163,9 @@ function eneon_entity_info() {
 }
 
 function eneon_issue_access_callback($op, $issue = NULL, $account = NULL) {
+
+  // TODO manage access rights
+
   if ($op == 'view' || $op == 'update' || $op == 'create' || $op == 'delete') {
     return TRUE;
   }
