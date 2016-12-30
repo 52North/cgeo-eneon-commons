@@ -47,7 +47,7 @@ class IssueEntityController extends EntityAPIController {
 
   public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
 
-    $wrapper = entity_metadata_wrapper(ENEON_PATH_ISSUES, $entity);
+    $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
 
     $content['description'] = array(
         '#type' => 'markup',

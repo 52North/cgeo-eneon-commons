@@ -54,7 +54,6 @@ function eneon_install() {
 
   $network_sba_reference_field = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
-      'type' => 'entityrefertaxonomy_term_referenceence',
       'type' => taxonomy_term_reference,
       'cardinality' => -1, // unlimited
       'translatable' => FALSE,
@@ -99,7 +98,7 @@ function eneon_install() {
   field_create_field($issue_selected_networks);
   $issue_selected_networks_instance = array(
       'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
-      'entity_type' => ENEON_ENTITY_NETWORK,
+      'entity_type' => ENEON_ENTITY_ISSUE,
       'label' => 'Selected Networks',
       'required' => FALSE,
       'bundle' => ENEON_ENTITY_ISSUE,

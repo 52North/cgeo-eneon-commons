@@ -59,6 +59,12 @@ function eneon_entity_property_info() {
               'setter callback' => 'entity_property_verbatim_set',
               'schema field' => 'description',
           ),
+          ENEON_ISSUE_SELECTED_SBAS => array(
+              'label' => t('Issue selected SBAs'),
+              'description' => t('Selected SBAs.'),
+              'type' => 'list<' . ENEON_VOCAB_BUNDLE_SBA . '>',
+              'setter callback' => 'entity_property_verbatim_set',
+          ),
           ENEON_ISSUE_SELECTED_NETWORKS => array(
               'label' => t('Issue selected networks'),
               'description' => t('Selected networks related to this issue.'),
