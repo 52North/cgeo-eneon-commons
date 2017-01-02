@@ -79,6 +79,7 @@ function eneon_update_networks() {
 
       // Add additional attributes
       $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
+      eneon_add_theme_references($wrapper, $network);
       eneon_add_sba_references($wrapper, $network);
       $wrapper->save();
     }
@@ -107,6 +108,20 @@ function eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
       }
     }
   }
+}
+
+function eneon_add_theme_references($wrapper, $network) {
+  $theme_relations = $wrapper->{ENEON_NETWORK_THEME_REFERENCE}->value();
+
+  $themes = isset($network ['theme']) ? $network ['theme'] : array();
+  $themes = in_array('All', $themes) ? array('*') : $themes;
+  $theme_terms = eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_THEME, $themes);
+  foreach($theme_terms as $theme_term) {
+    if ( !in_array($theme_term, $theme_relations)) {
+      $theme_relations[] = $theme_term;
+    }
+  }
+  $wrapper->{ENEON_NETWORK_THEME_REFERENCE}->set($theme_relations);
 }
 
 function eneon_add_sba_references($wrapper, $network) {

@@ -47,6 +47,7 @@ class IssueEntityController extends EntityAPIController {
 
   public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
 
+    $content = parent::buildContent($entity, $view_mode, $langcode, $content);
     $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
 
     $content['description'] = array(
@@ -56,8 +57,7 @@ class IssueEntityController extends EntityAPIController {
         '#suffix' => '</div>',
     );
 
-    return parent::buildContent($entity, $view_mode, $langcode, $content);;
-
+    return $content;
   }
 
 }

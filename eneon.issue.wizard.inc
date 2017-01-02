@@ -237,6 +237,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
+  $selected_themes = !empty($form_state['values']['themes']) ? $form_state['values']['themes'] : $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
   $selected_sbas = !empty($form_state['values']['sbas']) ? $form_state['values']['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
 
   $form['title'] = array(
@@ -252,18 +253,22 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
       '#required' => TRUE,
   );
 
-  $options = array();
-  $all_sbas = eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_SBA);
-  foreach ($all_sbas as $sba) {
-    $options[$sba->tid] = $sba->name;
-  }
   $form['sbas'] = array (
       '#title' => t('Sociatal Benefit Areas'),
       '#type' => 'select',
       '#multiple' => TRUE,
-      '#options' => $options,
       '#default_value' => $selected_sbas,
+      '#options' => array_column(eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_SBA), 'name', 'tid'),
       '#description' => t('Sociatal Benefit Areas your issue may be referring to.'),
+  );
+
+  $form['themes'] = array (
+      '#title' => t('Themes'),
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#default_value' => $selected_themes,
+      '#options' => array_column(eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_THEME), 'name', 'tid'),
+      '#description' => t('Themes your issue may be referring to.'),
   );
 
   return $form;
@@ -285,14 +290,10 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 
   $filter = array();
   $filter['sbas'] = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : array();
+  $filter['themes'] = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : array();
 
-  $networks = array();
-  $tmp_networks = eneon_network_query($filter);
-  if (eneon_not_empty_array($tmp_networks)) {
-    $networks = array_map("unserialize", array_unique(array_map("serialize", array_merge($networks, $tmp_networks))));
-    // array is sorted on the bases of id
-    sort($networks);
-  }
+  $networks = eneon_network_query($filter);
+  sort($networks);
 
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
@@ -344,15 +345,13 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
   $entity = $form_state[ENEON_ENTITY_ISSUE];
-  //     entity_form_submit_build_entity(ENEON_ENTITY_ISSUE, $entity, $form, $form_state);
   $entity->is_new_revision = TRUE;
 
   $wrapper = $entity->wrapper();
   $wrapper->title->set($form_value('title', 1));
   $wrapper->description->set($form_value('description', 1));
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
-
-  // TODO remember only selected networks
+  $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->set($form_value('themes', 1, array()));
 
   $network_checkbox_states = $form_value('suggested_networks', 2, array());
   $selected_networks = array_filter($network_checkbox_states, function($item) { return $item != 0; });

@@ -105,6 +105,21 @@ function eneon_install() {
       'bundle' => ENEON_ENTITY_ISSUE,
   );
   field_create_instance($issue_selected_sbas_instance);
+  $issue_selected_themes = array(
+      'field_name' => ENEON_ISSUE_SELECTED_THEMES,
+      'type' => 'taxonomy_term_reference',
+      'translatable' => FALSE,
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+  );
+  field_create_field($issue_selected_themes);
+  $issue_selected_themes_instance = array(
+      'field_name' => ENEON_ISSUE_SELECTED_THEMES,
+      'entity_type' => ENEON_ENTITY_ISSUE,
+      'label' => 'Selected Themes',
+      'required' => FALSE,
+      'bundle' => ENEON_ENTITY_ISSUE,
+  );
+  field_create_instance($issue_selected_themes_instance);
 
   $issue_selected_networks = array(
       'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
@@ -135,6 +150,7 @@ function eneon_uninstall() {
   field_delete_field(ENEON_NETWORK_SBA_REFERENCE);
   field_delete_field(ENEON_NETWORK_THEME_REFERENCE);
   field_delete_field(ENEON_ISSUE_SELECTED_NETWORKS);
+  field_delete_field(ENEON_ISSUE_SELECTED_THEMES);
   field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
 }
 
