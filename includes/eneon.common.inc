@@ -194,9 +194,17 @@ function eneon_network_query($filter=array()) {
   $nids = array();
 
   if (eneon_not_empty_array($sbas)) {
-    $nids = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
+    $nids += db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
         ->fields('r', array('entity_id'))
         ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
+        ->execute()
+        ->fetchCol();
+  }
+
+  if (eneon_not_empty_array($themes)) {
+    $nids += db_select('field_data_' . ENEON_NETWORK_THEME_REFERENCE, 'r')
+        ->fields('r', array('entity_id'))
+        ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
         ->execute()
         ->fetchCol();
   }
