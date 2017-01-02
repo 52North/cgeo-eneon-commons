@@ -87,7 +87,7 @@ function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
 
   $create_new = !isset($entity);
   $form_state[ENEON_ENTITY_ISSUE] = $create_new
-      ? entity_create(ENEON_ENTITY_ISSUE, array())
+      ? entity_create(ENEON_ENTITY_ISSUE, array('is_new_revision' => TRUE))
       : $entity;
 
   // Initialize a description of the steps for the wizard.
@@ -237,8 +237,8 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
-  $selected_themes = !empty($form_state['values']['themes']) ? $form_state['values']['themes'] : $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
-  $selected_sbas = !empty($form_state['values']['sbas']) ? $form_state['values']['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
+  $selected_themes = !empty($form_state['values']['themes']) ? $form_state['values']['themes'] : array_column($wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value(), 'tid');
+  $selected_sbas = !empty($form_state['values']['sbas']) ? $form_state['values']['sbas'] : array_column($wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value(), 'tid');
 
   $form['title'] = array(
       '#title' => t('Title'),
@@ -288,6 +288,35 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $current_step = &$form_state['step'];
   $values_previous_step = $form_state['step_information'][$current_step - 1]['stored_values'];
 
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
+  $selected_themes = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
+  $selected_sbas = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
+
+  $form['title'] = array(
+      '#title' => t('Title'),
+      '#type' => 'item',
+      '#markup' => $values_previous_step['title'],
+  );
+  $form['description'] = array(
+      '#title' => t('Issue description'),
+      '#type' => 'item',
+      '#resizable' => false,
+      '#markup' => $values_previous_step['description'],
+  );
+
+  $current_step = &$form_state['step'];
+  $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
+
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $form['sbas'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_SBAS);
+  $form['themes'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_THEMES);
+
+  $form['network_suggestion_hint'] = array(
+      '#type' => 'markup',
+      '#markup' => '<div class="network-suggestion-hint">' . t('The following networks could be useful for your issue. You can narrow down the list of networks here:') . '</div>',
+  );
+
   $filter = array();
   $filter['sbas'] = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : array();
   $filter['themes'] = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : array();
@@ -334,20 +363,19 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
  * @ingroup eneon
  */
 function eneon_issue_wizard_submit($form, &$form_state) {
-  $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
-    $step_values = $form_state['step_information'][$step_nr];
-    return isset($step_values['stored_values'][$name])
-        ? $step_values['stored_values'][$name]
-        : $default;
-  };
-
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $entity->is_new_revision = TRUE;
+  $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
+    $step_values = $form_state['step_information'][$step_nr];
+    return isset($step_values['stored_values'][$name])
+    ? $step_values['stored_values'][$name]
+    : $default;
+  };
 
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
   $wrapper = $entity->wrapper();
+
   $wrapper->title->set($form_value('title', 1));
   $wrapper->description->set($form_value('description', 1));
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
