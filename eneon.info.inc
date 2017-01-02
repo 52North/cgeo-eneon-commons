@@ -65,6 +65,12 @@ function eneon_entity_property_info() {
               'type' => 'list<' . ENEON_VOCAB_BUNDLE_SBA . '>',
               'setter callback' => 'entity_property_verbatim_set',
           ),
+          ENEON_ISSUE_SELECTED_THEMES => array(
+              'label' => t('Issue selected THEMES'),
+              'description' => t('Selected Themes.'),
+              'type' => 'list<' . ENEON_VOCAB_BUNDLE_THEME. '>',
+              'setter callback' => 'entity_property_verbatim_set',
+          ),
           ENEON_ISSUE_SELECTED_NETWORKS => array(
               'label' => t('Issue selected networks'),
               'description' => t('Selected networks related to this issue.'),
@@ -95,8 +101,14 @@ function eneon_entity_property_info() {
               'schema field' => 'description',
           ),
           ENEON_NETWORK_SBA_REFERENCE => array(
-              'label' => t('Network selected SBAs'),
-              'description' => t('Selected SBAs related to this issue.'),
+              'label' => t('Network SBA references'),
+              'description' => t('SBAs related to this network.'),
+              'type' => 'list<taxonomy_term_reference>',
+              'setter callback' => 'entity_property_verbatim_set',
+          ),
+          ENEON_NETWORK_THEME_REFERENCE => array(
+              'label' => t('Network theme reference'),
+              'description' => t('Themes related to this network.'),
               'type' => 'list<taxonomy_term_reference>',
               'setter callback' => 'entity_property_verbatim_set',
           ),

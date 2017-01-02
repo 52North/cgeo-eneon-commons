@@ -52,6 +52,13 @@ function eneon_install() {
   );
   taxonomy_vocabulary_save($sba_vocab);
 
+  $theme_vocab = (object) array(
+      'name' => 'Theme vocabulary',
+      'description' => 'Themes Vocabulary',
+      'machine_name' => ENEON_VOCAB_BUNDLE_THEME,
+  );
+  taxonomy_vocabulary_save($theme_vocab);
+
   $network_sba_reference_field = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'type' => taxonomy_term_reference,
@@ -112,14 +119,21 @@ function eneon_install() {
  * Implements hook_uninstall().
  */
 function eneon_uninstall() {
-  $vocab = taxonomy_vocabulary_machine_name_load(ENEON_VOCAB_BUNDLE_SBA);
-  if (isset($vocab)) {
-    taxonomy_vocabulary_delete($vocab->vid);
-  }
+  eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_SBA);
+  eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_THEME);
 
   field_delete_field(ENEON_NETWORK_SBA_REFERENCE);
   field_delete_field(ENEON_ISSUE_SELECTED_NETWORKS);
   field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
+}
+
+function eneon_delete_vocabulary($vocab) {
+  if (isset($vocab)) {
+    $vocab = taxonomy_vocabulary_machine_name_load($vocab);
+    if ($vocab) {
+      taxonomy_vocabulary_delete($vocab->vid);
+    }
+  }
 }
 
 /**

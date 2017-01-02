@@ -40,10 +40,13 @@ define('ENEON_TABLE_ISSUES', 'eneon_issues');
 define('ENEON_PATH_ISSUES', 'issues');
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
+define('ENEON_VOCAB_BUNDLE_THEME', 'eneon_vocab_theme');
 
 define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
+define('ENEON_ISSUE_SELECTED_THEMS', 'selected_themes');
 define('ENEON_ISSUE_SELECTED_NETWORKS', 'selected_networks');
 define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
+define('ENEON_NETWORK_THEME_REFERENCE', 'network_theme_ref');
 
 /**
  * Implements hook_init()
