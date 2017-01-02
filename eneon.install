@@ -38,7 +38,7 @@ function eneon_enable() {
  * Implements hook_disable)
  */
 function eneon_disable() {
-  eneon_uninstall();
+//   eneon_uninstall();
 }
 /**
  * Implements hook_install()
@@ -62,23 +62,33 @@ function eneon_install() {
   $network_sba_reference_field = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'type' => taxonomy_term_reference,
-      'cardinality' => -1, // unlimited
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
       'translatable' => FALSE,
   );
   field_create_field($network_sba_reference_field);
-  $instance = array(
+  $network_sba_reference_instance = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'entity_type' => ENEON_ENTITY_NETWORK,
       'label' => 'Reference to SBAs',
       'required' => FALSE,
       'bundle' => ENEON_ENTITY_NETWORK,
-      'display' => array(
-//           'default' => array( 'type' => 'taxonomy_term_reference_link', ),
-//           'full' => array( 'type' => 'taxonomy_term_reference_link', ),
-//           'teaser' => array( 'type' => 'hidden', ),
-        ),
   );
-  field_create_instance($instance);
+  field_create_instance($network_sba_reference_instance);
+  $network_theme_reference_field = array(
+      'field_name' => ENEON_NETWORK_THEME_REFERENCE,
+      'type' => taxonomy_term_reference,
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      'translatable' => FALSE,
+  );
+  field_create_field($network_theme_reference_field);
+  $network_theme_reference_instance = array(
+      'field_name' => ENEON_NETWORK_THEME_REFERENCE,
+      'entity_type' => ENEON_ENTITY_NETWORK,
+      'label' => 'Reference to Themes',
+      'required' => FALSE,
+      'bundle' => ENEON_ENTITY_NETWORK,
+  );
+  field_create_instance($network_theme_reference_instance);
 
   $issue_selected_sbas = array(
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
@@ -123,6 +133,7 @@ function eneon_uninstall() {
   eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_THEME);
 
   field_delete_field(ENEON_NETWORK_SBA_REFERENCE);
+  field_delete_field(ENEON_NETWORK_THEME_REFERENCE);
   field_delete_field(ENEON_ISSUE_SELECTED_NETWORKS);
   field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
 }

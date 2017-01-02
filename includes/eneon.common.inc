@@ -51,8 +51,6 @@ function eneon_update_networks() {
     return;
   }
 
-  $sba_vocab = taxonomy_vocabulary_machine_name_load(ENEON_VOCAB_BUNDLE_SBA);
-
   $networks = $eneon_graph['network'];
 
   /*
@@ -62,26 +60,9 @@ function eneon_update_networks() {
    * TODO probably its better to define them directly as constants?!
    */
 
-  // first iteration creates all SBAs
-  foreach ($networks as $network) {
-    if (! isset($network ['id']) || ! isset($network ['title'])) {
-      continue;
-    }
-
-    $sbas = isset($network ['SBA']) ? $network ['SBA'] : array();
-    $known_sba_names = array_map(function($term) { return $term->name; }, eneon_get_sbas_like());
-
-    foreach ($sbas as $sba) {
-      if ( $sba !== 'All' && !in_array($sba, $known_sba_names)) {
-        $term = (object) array(
-            'name' => $sba,
-            'description' => $sba,
-            'vid' => $sba_vocab->vid,
-        );
-        taxonomy_term_save($term);
-      }
-    }
-  }
+  // first iteration creates all SBAs/themes/etc.
+  eneon_create_taxonomy_terms($networks, 'SBA', ENEON_VOCAB_BUNDLE_SBA);
+  eneon_create_taxonomy_terms($networks, 'theme', ENEON_VOCAB_BUNDLE_THEME);
 
   // second iteration creates all networks
   foreach ($networks as $network) {
@@ -105,12 +86,35 @@ function eneon_update_networks() {
   drupal_set_message($message = t('"eneon" module: imported #@count networks.', array('@count' => sizeof($networks))), $type = 'status');
 }
 
+function eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
+  $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
+  foreach ($networks as $network) {
+    if (! isset($network ['id']) || ! isset($network ['title'])) {
+      continue;
+    }
+
+    $terms = isset($network [$property_name]) ? $network [$property_name] : array();
+    $known_sba_names = array_map(function($term) { return $term->name; }, eneon_get_taxonomy_terms_like($vocab_name));
+
+    foreach ($terms as $term_name) {
+      if ( $term_name !== 'All' && !in_array($term_name, $known_sba_names)) {
+        $term = (object) array(
+            'name' => $term_name,
+            'description' => $term_name,
+            'vid' => $vocab->vid,
+        );
+        taxonomy_term_save($term);
+      }
+    }
+  }
+}
+
 function eneon_add_sba_references($wrapper, $network) {
   $sba_relations = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
 
   $sbas = isset($network ['SBA']) ? $network ['SBA'] : array();
   $sbas = in_array('All', $sbas) ? array('*') : $sbas;
-  $sba_terms = eneon_get_sbas_like($sbas);
+  $sba_terms = eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_SBA, $sbas);
   foreach($sba_terms as $sba_term) {
     if ( !in_array($sba_term, $sba_relations)) {
       $sba_relations[] = $sba_term;
@@ -119,7 +123,7 @@ function eneon_add_sba_references($wrapper, $network) {
   $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->set($sba_relations);
 }
 
-function eneon_get_sbas_like($filters=array('*')) {
+function eneon_get_taxonomy_terms_like($vocab, $filters=array('*')) {
   if (!isset($filters) || empty($filters)) {
     return array();
   }
@@ -138,7 +142,7 @@ function eneon_get_sbas_like($filters=array('*')) {
 
   $query = $query
       ->entityCondition('entity_type', 'taxonomy_term')
-      ->entityCondition('bundle', ENEON_VOCAB_BUNDLE_SBA);
+      ->entityCondition('bundle', $vocab);
 
   $results = $query->execute();
   if (isset($results['taxonomy_term'])) {

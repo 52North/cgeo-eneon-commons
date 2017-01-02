@@ -253,7 +253,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
   );
 
   $options = array();
-  $all_sbas = eneon_get_sbas_like();
+  $all_sbas = eneon_get_taxonomy_terms_like(ENEON_VOCAB_BUNDLE_SBA);
   foreach ($all_sbas as $sba) {
     $options[$sba->tid] = $sba->name;
   }
