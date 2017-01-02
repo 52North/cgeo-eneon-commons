@@ -140,6 +140,7 @@ function eneon_entity_info() {
           'views controller class' => 'EntityDefaultViewsController',
           'uri callback' => 'entity_class_uri',
           'label callback' => 'entity_class_label',
+          'access callback' => 'eneon_access_callback',
           'module' => 'eneon'
       ),
 
@@ -157,12 +158,13 @@ function eneon_entity_info() {
           'views controller class' => 'EntityDefaultViewsController',
           'uri callback' => 'entity_class_uri',
           'label callback' => 'entity_class_label',
+          'access callback' => 'eneon_access_callback',
           'module' => 'eneon'
       )
   );
 }
 
-function eneon_issue_access_callback($op, $issue = NULL, $account = NULL) {
+function eneon_access_callback($op, $issue = NULL, $account = NULL) {
 
   // TODO manage access rights
 

@@ -77,7 +77,7 @@ function eneon_install() {
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
       'type' => 'taxonomy_term_reference',
       'translatable' => FALSE,
-      'cardinality' => 8,
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
   );
   field_create_field($issue_selected_sbas);
   $issue_selected_sbas_instance = array(
@@ -91,9 +91,12 @@ function eneon_install() {
 
   $issue_selected_networks = array(
       'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
-      'type' => 'list_integer',
+      'type' => 'entityreference',
+      'settings' => array(
+          'target_type' => ENEON_ENTITY_NETWORK,
+      ),
       'translatable' => FALSE,
-      'cardinality' => -1,
+      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
   );
   field_create_field($issue_selected_networks);
   $issue_selected_networks_instance = array(
