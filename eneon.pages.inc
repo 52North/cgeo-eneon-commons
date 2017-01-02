@@ -71,21 +71,9 @@ function eneon_view_issue_list() {
 
   return $output;
 }
-// function eneon_view_entity_item($id, $entity_type) {
 function eneon_view_entity_item($entity) {
   drupal_set_title($entity->title);
   return entity_view(ENEON_ENTITY_ISSUE, array(
       entity_id(ENEON_ENTITY_ISSUE, $entity) => $entity),
       'full');
 }
-/**
- * Creates an entity stub and delegates to the edit form.
- *
- * @param type $entity_type the entity type
- * @return The entity's edit form
- */
-// function eneon_add_entity_item($entity_type) {
-//   drupal_set_title(t('Add new ' . entity_get_info($entity_type)['label']));
-//   $entity = entity_create($entity_type, array());
-//   return entity_ui_get_form($entity_type, $entity);
-// }
