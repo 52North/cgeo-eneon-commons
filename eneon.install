@@ -75,7 +75,7 @@ function eneon_install() {
 
   $issue_selected_sbas = array(
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
-      'type' => 'list_integer',
+      'type' => 'taxonomy_term_reference',
       'translatable' => FALSE,
       'cardinality' => 8,
   );
