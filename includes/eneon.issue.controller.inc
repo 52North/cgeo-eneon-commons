@@ -55,7 +55,11 @@ class IssueEntityController extends EntityAPIController {
         '#markup' => check_plain($entity->description),
         '#prefix' => '<div class="issue-description">',
         '#suffix' => '</div>',
+        '#weight' => 0,
     );
+
+    $content['selected_sbas']['#weight'] = 1;
+    $content['selected_themes']['#weight'] = 1;
 
     return $content;
   }
