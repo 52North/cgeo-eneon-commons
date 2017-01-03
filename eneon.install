@@ -44,7 +44,12 @@ function eneon_disable() {
  * Implements hook_install()
  */
 function eneon_install() {
+  _eneon_create_vocabularies();
+  _eneon_create_network_fields();
+  _eneon_create_issue_fields();
+}
 
+function _eneon_create_vocabularies() {
   $sba_vocab = (object) array(
       'name' => 'SBA vocabulary',
       'description' => 'Societal Benefit Areas Vocabulary',
@@ -58,7 +63,9 @@ function eneon_install() {
       'machine_name' => ENEON_VOCAB_BUNDLE_THEME,
   );
   taxonomy_vocabulary_save($theme_vocab);
+}
 
+function _eneon_create_network_fields() {
   $network_sba_reference_field = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
       'type' => taxonomy_term_reference,
@@ -89,7 +96,9 @@ function eneon_install() {
       'bundle' => ENEON_ENTITY_NETWORK,
   );
   field_create_instance($network_theme_reference_instance);
+}
 
+function _eneon_create_issue_fields() {
   $issue_selected_sbas = array(
       'field_name' => ENEON_ISSUE_SELECTED_SBAS,
       'type' => 'taxonomy_term_reference',
@@ -140,6 +149,7 @@ function eneon_install() {
   );
   field_create_instance($issue_selected_networks_instance);
 }
+
 /**
  * Implements hook_uninstall().
  */
