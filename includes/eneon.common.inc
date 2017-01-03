@@ -26,6 +26,7 @@
   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
   * Public License for more details.
   */
+
 function eneon_download_network_graph() {
   $response = drupal_http_request('http://www.eneon.net/graph/networks.json');
   $data = ! empty($response) && $response->code == 200 ? $response->data : NULL;
@@ -52,6 +53,7 @@ function eneon_update_networks() {
   }
 
   $networks = $eneon_graph['network'];
+  $network_property_infos = eneon_entity_property_info()[ENEON_ENTITY_NETWORK];
 
   /*
    * Some networks refer to 'All' SBAs so we have to iterate through
@@ -78,8 +80,11 @@ function eneon_update_networks() {
       $entity->type = $network ['type'];
 
       // Add additional attributes
-      $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
-      eneon_add_theme_references($wrapper, $network);
+
+      $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity, array(
+          'property info' => $network_property_infos['properties'], // when hook was not called yet
+      ));
+      eneon_add_theme_references($wrapper, $network, $network_property_infos);
       eneon_add_sba_references($wrapper, $network);
       $wrapper->save();
     }
@@ -111,7 +116,7 @@ function eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
 }
 
 function eneon_add_theme_references($wrapper, $network) {
-  $theme_relations = $wrapper->{ENEON_NETWORK_THEME_REFERENCE}->value();
+  $theme_relations = array(); //$wrapper->{ENEON_NETWORK_THEME_REFERENCE}->value();
 
   $themes = isset($network ['theme']) ? $network ['theme'] : array();
   $themes = in_array('All', $themes) ? array('*') : $themes;
@@ -125,7 +130,7 @@ function eneon_add_theme_references($wrapper, $network) {
 }
 
 function eneon_add_sba_references($wrapper, $network) {
-  $sba_relations = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
+  $sba_relations =  array(); //$wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
 
   $sbas = isset($network ['SBA']) ? $network ['SBA'] : array();
   $sbas = in_array('All', $sbas) ? array('*') : $sbas;
