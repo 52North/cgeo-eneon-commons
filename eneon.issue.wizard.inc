@@ -85,7 +85,8 @@ function _eneon_issue_wizard_steps() {
  */
 function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
 
-  $create_new = !isset($entity);
+  $create_new = !isset($entity) && !isset($form_state[ENEON_ENTITY_ISSUE]);
+  $entity = isset($form_state[ENEON_ENTITY_ISSUE]) ? $form_state[ENEON_ENTITY_ISSUE] : $entity;
   $form_state[ENEON_ENTITY_ISSUE] = $create_new
       ? entity_create(ENEON_ENTITY_ISSUE, array('is_new_revision' => TRUE))
       : $entity;
@@ -194,6 +195,7 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
+  _eneon_write_entity_values($form_state);
   if ($current_step < count($form_state['step_information'])) {
     $current_step++;
     if (!empty($form_state['step_information'][$current_step]['stored_values'])) {
@@ -233,7 +235,7 @@ function eneon_issue_wizard_metadata($form, &$form_state) {
   $form = array();
 
   $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
+  $wrapper = $entity->wrapper();
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
   $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
@@ -297,18 +299,17 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       '#title' => t('Title'),
       '#type' => 'item',
       '#markup' => $values_previous_step['title'],
+      '#weight' => 0,
   );
   $form['description'] = array(
       '#title' => t('Issue description'),
       '#type' => 'item',
       '#resizable' => false,
       '#markup' => $values_previous_step['description'],
+      '#weight' => 0,
   );
 
-  $current_step = &$form_state['step'];
-  $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
-
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  // XXX values are only rendered after saving (ie when editing issue)
   $form['sbas'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_SBAS);
   $form['themes'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_THEMES);
 
@@ -317,11 +318,10 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       '#markup' => '<div class="network-suggestion-hint">' . t('The following networks could be useful for your issue. You can narrow down the list of networks here:') . '</div>',
   );
 
-  $filter = array();
-  $filter['sbas'] = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : array();
-  $filter['themes'] = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : array();
-
-  $networks = eneon_network_query($filter);
+  $networks = eneon_network_query(array(
+      'sbas' => $selected_sbas,
+      'themes' => $selected_themes,
+  ));
   sort($networks);
 
   $form['fieldset_eneon_proposed_networks'] = array(
@@ -366,6 +366,18 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $current_step = &$form_state['step'];
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
+  _eneon_write_entity_values($form_state);
+  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $entity->save();
+
+  drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
+
+  // Redirect user to edited entity page.
+  $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
+  $form_state['redirect'] = $entity_uri['path'];
+}
+
+function _eneon_write_entity_values(&$form_state) {
   $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
     $step_values = $form_state['step_information'][$step_nr];
     return isset($step_values['stored_values'][$name])
@@ -373,7 +385,7 @@ function eneon_issue_wizard_submit($form, &$form_state) {
     : $default;
   };
 
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
+  $entity = &$form_state[ENEON_ENTITY_ISSUE];
   $wrapper = $entity->wrapper();
 
   $wrapper->title->set($form_value('title', 1));
@@ -384,12 +396,4 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $network_checkbox_states = $form_value('suggested_networks', 2, array());
   $selected_networks = array_filter($network_checkbox_states, function($item) { return $item != 0; });
   $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set($selected_networks);
-  $wrapper->save();
-
-  drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
-
-  // Redirect user to edited entity page.
-  $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
-  $form_state['redirect'] = $entity_uri['path'];
 }
-
