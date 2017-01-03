@@ -37,3 +37,5 @@ files[] = includes/eneon.common.inc
 files[] = includes/eneon.network.controller.inc
 
 dependencies[] = entity
+dependencies[] = ctools
+dependencies[] = views

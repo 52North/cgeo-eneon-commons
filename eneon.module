@@ -61,9 +61,10 @@ function eneon_init() {
  * Implements hook_menu()
  */
 function eneon_menu() {
-
+  // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
   $autoload_issue_wildcard = ENEON_PATH_ISSUES . '/%' . ENEON_ENTITY_ISSUE;
   $autoload_network_wildcard = ENEON_PATH_NETWORKS . '/%' . ENEON_ENTITY_NETWORK;
+  $autoload_network_modal_wildcard = 'eneon/%ctools_js/%' . ENEON_ENTITY_NETWORK;
 
   $items[ENEON_PATH_ISSUES] = array(
       'title' => t('Issues'),
@@ -99,7 +100,6 @@ function eneon_menu() {
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
       'file' => 'eneon.issue.wizard.inc',
   );
-  // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
   $items[$autoload_issue_wildcard . '/delete'] = array(
       'title' => t('Delete issue'),
       'page callback' => 'drupal_get_form',
@@ -119,6 +119,14 @@ function eneon_menu() {
       'page callback' => 'eneon_view_entity_item',
       'page arguments' => array(1, ENEON_ENTITY_NETWORK),
       'access arguments' => array('access content'),
+      'file' => 'eneon.pages.inc',
+  );
+
+  $items[$autoload_network_modal_wildcard] = array(
+      'title' => t('Network Details'),
+      'page arguments' => array(1, 2),
+      'page callback' => 'eneon_view_network_modal',
+      'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
   return $items;
