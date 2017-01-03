@@ -199,19 +199,25 @@ function eneon_network_query($filter=array()) {
   $nids = array();
 
   if (eneon_not_empty_array($sbas)) {
-    $nids += db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
-        ->fields('r', array('entity_id'))
-        ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
-        ->execute()
-        ->fetchCol();
+    $result = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
+                  ->fields('r', array('entity_id'))
+                  ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
+                  ->execute()
+                  ->fetchCol();
+    $nids = !empty($nids)
+        ? array_intersect_key($nids, $result)
+        : $result;
   }
 
   if (eneon_not_empty_array($themes)) {
-    $nids += db_select('field_data_' . ENEON_NETWORK_THEME_REFERENCE, 'r')
-        ->fields('r', array('entity_id'))
-        ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
-        ->execute()
-        ->fetchCol();
+    $result = db_select('field_data_' . ENEON_NETWORK_THEME_REFERENCE, 'r')
+                  ->fields('r', array('entity_id'))
+                  ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
+                  ->execute()
+                  ->fetchCol();
+    $nids = !empty($nids)
+        ? array_intersect_key($nids, $result)
+        : $result;
   }
 
   return eneon_not_empty_array($nids)
@@ -221,6 +227,6 @@ function eneon_network_query($filter=array()) {
 
 function eneon_not_empty_array($potential_array) {
   return isset($potential_array) &&
-  is_array($potential_array) &&
-  sizeof($potential_array) > 0;
+      is_array($potential_array) &&
+      sizeof($potential_array) > 0;
 }
