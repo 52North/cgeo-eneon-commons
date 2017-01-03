@@ -315,7 +315,7 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 
   $form['network_suggestion_hint'] = array(
       '#type' => 'markup',
-      '#markup' => '<div class="network-suggestion-hint">' . t('The following networks could be useful for your issue. You can narrow down the list of networks here:') . '</div>',
+      '#markup' => '<div class="suggested-networks-hint">' . t('The following networks could be useful for your issue. You can narrow down the list of networks here:') . '</div>',
   );
 
   $networks = eneon_network_query(array(
@@ -327,8 +327,6 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
       '#title' => t('Proposed Networks'),
-      '#prefix' => '<div id="eneon-suggested-networks">',
-      '#suffix' => '</div>'
   );
 
   $selected_networks = array();
@@ -342,6 +340,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
         '#options' => $suggested_networks,
+        '#prefix' => '<div class="suggested-networks">',
+        '#suffix' => '</div>',
     );
   }
   return $form;
