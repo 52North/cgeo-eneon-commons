@@ -324,24 +324,24 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   ));
   sort($networks);
 
+  $network_count = sizeof($networks);
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Proposed Networks'),
+      '#title' => t('Proposed Networks (#@count)', array('@count' => $network_count)),
   );
 
-  $selected_networks = array();
-  // TODO always show selected networks (even they do not match actual query)
-
   if (eneon_not_empty_array($networks)) {
-    $suggested_networks = array();
-    foreach ($networks as $network) {
-      $suggested_networks[$network->id] = $network->title;
-    }
+    $suggested_networks = array_column($networks, 'title', 'id');
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
         '#options' => $suggested_networks,
         '#prefix' => '<div class="suggested-networks">',
         '#suffix' => '</div>',
+    );
+  } else {
+    $form['fieldset_eneon_proposed_networks']['no_networks'] = array(
+        '#type' => 'item',
+        '#markup' => t('No networks can be suggested based on current selections'),
     );
   }
   return $form;
