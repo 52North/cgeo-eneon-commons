@@ -322,7 +322,6 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       'sbas' => $selected_sbas,
       'themes' => $selected_themes,
   ));
-  sort($networks);
 
   $network_count = sizeof($networks);
   $form['fieldset_eneon_proposed_networks'] = array(

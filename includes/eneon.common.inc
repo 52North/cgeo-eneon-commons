@@ -220,9 +220,11 @@ function eneon_network_query($filter=array()) {
         : $result;
   }
 
-  return eneon_not_empty_array($nids)
+  $networks = eneon_not_empty_array($nids)
       ? eneon_network_load_multiple($nids)
       : array();
+  sort($networks);
+  return $networks;
 }
 
 function eneon_not_empty_array($potential_array) {
