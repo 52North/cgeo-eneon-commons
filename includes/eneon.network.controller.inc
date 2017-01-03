@@ -50,16 +50,19 @@ class NetworkEntityController extends EntityAPIController {
     $content['description'] = array(
         '#type' => 'markup',
         '#markup' => check_plain($entity->description),
-        '#prefix' => '<div class="network-description">',
+        '#prefix' => '<div class="eneon-entity description">',
         '#suffix' => '</div>',
+        '#weight' => 0,
     );
 
+    $content[ENEON_NETWORK_SBA_REFERENCE]['#weight'] = 1;
+    $content[ENEON_NETWORK_THEME_REFERENCE]['#weight'] = 1;
+
     switch ($view_mode) {
-    	case 'teaser':
-    		unset($content[ENEON_NETWORK_SBA_REFERENCE]);
-    		break;
-    	case 'full' :
-    		$content['ENEON_NETWORK_SBA_REFERENCE'] = field_view_field(ENEON_ENTITY_NETWORK, $entity, ENEON_NETWORK_SBA_REFERENCE);
+      case 'teaser':
+        unset($content[ENEON_NETWORK_SBA_REFERENCE]);
+        unset($content[ENEON_NETWORK_THEME_REFERENCE]);
+        break;
     }
 
     return $content;

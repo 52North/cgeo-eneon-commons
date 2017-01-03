@@ -53,7 +53,7 @@ class IssueEntityController extends EntityAPIController {
     $content['description'] = array(
         '#type' => 'markup',
         '#markup' => check_plain($entity->description),
-        '#prefix' => '<div class="issue-description">',
+        '#prefix' => '<div class="eneon-entity description">',
         '#suffix' => '</div>',
         '#weight' => 0,
     );
