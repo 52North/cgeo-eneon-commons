@@ -38,7 +38,7 @@ echo -e "\nmysql is ready\n"
 # install required dependencies   
 #
 echo -e "download required drupal exensions\n"
-modules="entity entityreference views devel ctools" 
+modules="entity entityreference views devel ctools module_filter" 
 drush dl $modules
 #
 # check for settings php and print error message if not found => requires
