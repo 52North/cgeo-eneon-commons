@@ -85,10 +85,10 @@ function _eneon_issue_wizard_steps() {
  */
 function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
 
-  $create_new = !isset($entity) && !isset($form_state[ENEON_ENTITY_ISSUE]);
-  $entity = isset($form_state[ENEON_ENTITY_ISSUE]) ? $form_state[ENEON_ENTITY_ISSUE] : $entity;
-  $form_state[ENEON_ENTITY_ISSUE] = $create_new
-      ? entity_create(ENEON_ENTITY_ISSUE, array('is_new_revision' => TRUE))
+  $create_new = !isset($form_state['eneon_issue']) && !isset($entity);
+  $entity = isset($form_state['eneon_issue']) ? $form_state['eneon_issue'] : $entity;
+  $form_state['eneon_issue'] = $create_new
+      ? eneon_create_issue()
       : $entity;
 
   // Initialize a description of the steps for the wizard.
@@ -234,11 +234,11 @@ function eneon_issue_wizard_next_submit($form, &$form_state) {
 function eneon_issue_wizard_metadata($form, &$form_state) {
   $form = array();
 
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $wrapper = $entity->wrapper();
+  $entity = $form_state['eneon_issue'];
+  $wrapper = entity_metadata_wrapper('node', $entity);
 
   $title_value = !empty($form_state['values']['title']) ? $form_state['values']['title'] : $wrapper->title->value();
-  $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->description->value();
+  $description_value = !empty($form_state['values']['description']) ? $form_state['values']['description'] : $wrapper->{ENEON_ISSUE_DESCRIPTION}->value();
   $selected_themes = !empty($form_state['values']['themes']) ? $form_state['values']['themes'] : array_column($wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value(), 'tid');
   $selected_sbas = !empty($form_state['values']['sbas']) ? $form_state['values']['sbas'] : array_column($wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value(), 'tid');
 
@@ -290,8 +290,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $current_step = &$form_state['step'];
   $values_previous_step = $form_state['step_information'][$current_step - 1]['stored_values'];
 
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $wrapper = entity_metadata_wrapper(ENEON_ENTITY_ISSUE, $entity);
+  $entity = $form_state['eneon_issue'];
+  $wrapper = entity_metadata_wrapper('node', $entity);
   $selected_themes = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
   $selected_sbas = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
 
@@ -310,8 +310,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   );
 
   // XXX values are only rendered after saving (ie when editing issue)
-  $form['sbas'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_SBAS);
-  $form['themes'] = field_view_field(ENEON_ENTITY_ISSUE, $entity, ENEON_ISSUE_SELECTED_THEMES);
+  $form['sbas'] = field_view_field('node', $entity, ENEON_ISSUE_SELECTED_SBAS);
+  $form['themes'] = field_view_field('node', $entity, ENEON_ISSUE_SELECTED_THEMES);
 
   $form['network_suggestion_hint'] = array(
       '#type' => 'markup',
@@ -331,6 +331,9 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 
   if (eneon_not_empty_array($networks)) {
     $suggested_networks = array_column($networks, 'title', 'id');
+
+    // TODO render modal window links => $items[] = l(entity_label(ENEON_ENTITY_ISSUE, $entity), $entity_uri['path']);
+
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
         '#options' => $suggested_networks,
@@ -366,29 +369,30 @@ function eneon_issue_wizard_submit($form, &$form_state) {
   $form_state['step_information'][$current_step]['stored_values'] = $form_state['values'];
 
   _eneon_write_entity_values($form_state);
-  $entity = $form_state[ENEON_ENTITY_ISSUE];
-  $entity->save();
+  $entity = $form_state['eneon_issue'];
+  $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->save();
 
-  drupal_set_message(t('The issue: @title has been saved.', array('@title' => entity_label(ENEON_ENTITY_ISSUE, $entity))));
+  drupal_set_message(t('The issue: @title has been saved.', array('@title' => $entity->title)));
 
   // Redirect user to edited entity page.
-  $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
-  $form_state['redirect'] = $entity_uri['path'];
+  $node_uri = node_uri($entity);
+  $form_state['redirect'] = $node_uri['path'];
 }
 
 function _eneon_write_entity_values(&$form_state) {
   $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
     $step_values = $form_state['step_information'][$step_nr];
     return isset($step_values['stored_values'][$name])
-    ? $step_values['stored_values'][$name]
-    : $default;
+        ? $step_values['stored_values'][$name]
+        : $default;
   };
 
-  $entity = &$form_state[ENEON_ENTITY_ISSUE];
-  $wrapper = $entity->wrapper();
+  $entity = &$form_state['eneon_issue'];
+  $wrapper = entity_metadata_wrapper('node', $entity);
 
   $wrapper->title->set($form_value('title', 1));
-  $wrapper->description->set($form_value('description', 1));
+  $wrapper->{ENEON_ISSUE_DESCRIPTION}->set($form_value('description', 1));
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set($form_value('sbas', 1, array()));
   $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->set($form_value('themes', 1, array()));
 
