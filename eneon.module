@@ -31,12 +31,10 @@ require_once 'eneon.info.inc';
 require_once 'includes/eneon.issue.controller.inc';
 require_once 'includes/eneon.network.controller.inc';
 
-define('ENEON_TABLE_NETWORKS', 'eneon_networks');
 define('ENEON_ENTITY_NETWORK', 'eneon_network');
 define('ENEON_PATH_NETWORKS', 'networks');
 
 define('ENEON_ENTITY_ISSUE', 'eneon_issue');
-define('ENEON_TABLE_ISSUES', 'eneon_issues');
 define('ENEON_PATH_ISSUES', 'issues');
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
