@@ -65,73 +65,46 @@ function eneon_init() {
  */
 function eneon_menu() {
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
-  $autoload_issue_wildcard = ENEON_PATH_ISSUES . '/%' . ENEON_ENTITY_ISSUE;
-  $autoload_network_wildcard = ENEON_PATH_NETWORKS . '/%' . ENEON_ENTITY_NETWORK;
-  $autoload_network_modal_wildcard = 'eneon/%ctools_js/%' . ENEON_ENTITY_NETWORK;
+//   $autoload_network_modal_wildcard = 'eneon/%ctools_js/%';
 
-  $items[ENEON_PATH_ISSUES] = array(
+  $items['issues'] = array(
       'title' => t('Issues'),
       'page callback' => 'eneon_view_issue_list',
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-  $items[ENEON_PATH_ISSUES . '/add'] = array(
-      'title' => t('Add issue'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('eneon_issue_wizard'),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.issue.wizard.inc',
-      'type' => MENU_LOCAL_TASK,
-  );
-  $items[$autoload_issue_wildcard] = array(
-      'title' => t('Issue'),
-      'page callback' => 'eneon_view_entity_item',
-      'page arguments' => array(1),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-  $items[$autoload_issue_wildcard . '/view'] = array(
-    'title' => 'View Issue',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-  $items[$autoload_issue_wildcard . '/edit'] = array(
-      'title' => 'Edit issue',
-      'page callback' => 'drupal_get_form',
-      'access arguments' => array('access content'),
-      'page arguments' => array('eneon_issue_wizard', 1),
-      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-      'file' => 'eneon.issue.wizard.inc',
-  );
-  $items[$autoload_issue_wildcard . '/delete'] = array(
-      'title' => t('Delete issue'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('eneon_issue_form_delete', 1),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.issue.ui.inc',
-  );
-
-  $items[ENEON_PATH_NETWORKS] = array(
-      'title' => t('Networks'),
-      'page callback' => 'eneon_view_network_list',
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-  $items[$autoload_network_wildcard] = array(
-      'title' => t('Network'),
-      'page callback' => 'eneon_view_entity_item',
-      'page arguments' => array(1, ENEON_ENTITY_NETWORK),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-
-  $items[$autoload_network_modal_wildcard] = array(
-      'title' => t('Network Details'),
-      'page arguments' => array(1, 2),
-      'page callback' => 'eneon_view_network_modal',
       'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
+  $items['issues/add'] = array(
+      'title' => t('Add issue'),
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('eneon_issue_wizard'),
+      'access callback' => TRUE,
+      'file' => 'eneon.issue.wizard.inc',
+      'type' => MENU_LOCAL_TASK,
+  );
+  // XXX show wizard when editing
+//   $items[$autoload_issue_wildcard . '/edit'] = array(
+//       'title' => 'Edit issue',
+//       'page callback' => 'drupal_get_form',
+//       'access arguments' => array('access content'),
+//       'page arguments' => array('eneon_issue_wizard', 1),
+//       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+//       'file' => 'eneon.issue.wizard.inc',
+//   );
+
+  $items['networks'] = array(
+      'title' => t('Networks'),
+      'page callback' => 'eneon_view_network_list',
+      'access callback' => TRUE,
+      'file' => 'eneon.pages.inc',
+  );
+
+//   $items[$autoload_network_modal_wildcard] = array(
+//       'title' => t('Network Details'),
+//       'page arguments' => array(1, 2),
+//       'page callback' => 'eneon_view_network_modal',
+//       'access callback' => TRUE,
+//       'file' => 'eneon.pages.inc',
+//   );
   return $items;
 }
 
