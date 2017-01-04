@@ -27,65 +27,46 @@
   * Public License for more details.
   */
 
+require_once 'includes/eneon.common.inc';
+
 function eneon_view_network_list() {
   $output = array();
-  $entities = entity_load(ENEON_ENTITY_NETWORK);
-  // when listing entities, we use the teaser view
-  $list = entity_view(ENEON_ENTITY_NETWORK, $entities, 'teaser');
-  if (isset($list[ENEON_ENTITY_NETWORK])) {
-    foreach ($list[ENEON_ENTITY_NETWORK] as $entity) {
-        $output[] = drupal_render($entity);
-    }
+  $entities = eneon_network_query();
+  foreach ($entities as $node) {
+    $output[] = node_view($node, 'teaser');
   }
-  return implode($output);
+  return drupal_render($output);
 }
 function eneon_view_issue_list() {
   // Show link to the entity "Add" page.
   $output = '<br/>';
   $output .= theme_link(
       array(
-          'text' => t('Add new entity'),
-          'path' => ENEON_PATH_ISSUES . '/add',
+          'text' => t('Add new Issue'),
+          'path' => 'issues/add',
           'options' => array(
               'attributes' => array(),
               'html' => TRUE,
           ),
       )
-      );
-
-  // Show list of existing entities.
-  $entities = entity_load(ENEON_ENTITY_ISSUE);
-  $items = array();
-  foreach ($entities as $entity) {
-    $entity_uri = entity_uri(ENEON_ENTITY_ISSUE, $entity);
-    $items[] = l(entity_label(ENEON_ENTITY_ISSUE, $entity), $entity_uri['path']);
-  }
-  $output .= theme_item_list(
-      array(
-          'items' => $items,
-          'title' => t('List of existing entities.'),
-          'type' => 'ul',
-          'attributes' => array(),
-      )
   );
 
+  $entities = eneon_issue_query();
+  foreach ($entities as $node) {
+    $node_view = node_view($node, 'teaser');
+    $output .= drupal_render($node_view);
+  }
   return $output;
 }
-function eneon_view_entity_item($entity) {
-  drupal_set_title($entity->title);
-  return entity_view(ENEON_ENTITY_ISSUE, array(
-      entity_id(ENEON_ENTITY_ISSUE, $entity) => $entity),
-      'full');
-}
 
-function eneon_view_network_modal($js = NULL, $entity= null) {
-  $contents = render(node_view($entity, 'teaser'));
-  if ($js) {
-    // Required includes for ctools to work:
-    ctools_include('modal');
-    ctools_include('ajax');
-    return ctools_modal_render($entity->title, $contents) ;
-  } else {
-    return $contents;
-  }
-}
+// function eneon_view_network_modal($js = NULL, $entity= null) {
+//   $contents = render(node_view($entity, 'teaser'));
+//   if ($js) {
+//     // Required includes for ctools to work:
+//     ctools_include('modal');
+//     ctools_include('ajax');
+//     return ctools_modal_render($entity->title, $contents) ;
+//   } else {
+//     return $contents;
+//   }
+// }
