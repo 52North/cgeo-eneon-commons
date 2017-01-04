@@ -79,12 +79,13 @@ function eneon_view_entity_item($entity) {
 }
 
 function eneon_view_network_modal($js = NULL, $entity= null) {
-  $contents = render(node_view($entity, 'teaser'));
+  $output = entity_view(ENEON_ENTITY_NETWORK, array($entity), 'full');
+  $contents = render($output);
   if ($js) {
     // Required includes for ctools to work:
     ctools_include('modal');
     ctools_include('ajax');
-    return ctools_modal_render($entity->title, $contents) ;
+    return ctools_modal_render($node->title, $contents) ;
   } else {
     return $contents;
   }

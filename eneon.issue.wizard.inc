@@ -331,6 +331,14 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
 
   if (eneon_not_empty_array($networks)) {
     $suggested_networks = array_column($networks, 'title', 'id');
+
+    ctools_include('modal');
+    ctools_include('ajax');
+    ctools_modal_add_js();
+    $suggested_networks = array_map(function($title, $id) {
+      return ctools_modal_text_button($title, 'eneon/nojs/' . $id, $title);
+    }, $suggested_networks, array_keys($suggested_networks));
+
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
         '#options' => $suggested_networks,
