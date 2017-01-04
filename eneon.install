@@ -38,15 +38,20 @@ function eneon_enable() {
  * Implements hook_disable)
  */
 function eneon_disable() {
-//   eneon_uninstall();
+  eneon_uninstall();
 }
 /**
  * Implements hook_install()
  */
 function eneon_install() {
+//   node_types_rebuild();
+//   $types = node_type_get_types();
+//   node_add_body_field($types[ENEON_BUNDLE_ISSUE]);
+
   _eneon_create_vocabularies();
-  _eneon_create_network_fields();
-  _eneon_create_issue_fields();
+  _eneon_create_fields(ENEON_BUNDLE_NETWORK, _eneon_network_field_infos());
+  _eneon_create_fields(ENEON_BUNDLE_ISSUE, _eneon_issue_field_infos());
+  module_invoke('eneon', 'entity_property_info');
 }
 
 function _eneon_create_vocabularies() {
@@ -65,110 +70,164 @@ function _eneon_create_vocabularies() {
   taxonomy_vocabulary_save($theme_vocab);
 }
 
-function _eneon_create_network_fields() {
-  $network_sba_reference_field = array(
-      'field_name' => ENEON_NETWORK_SBA_REFERENCE,
-      'type' => taxonomy_term_reference,
-      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-      'translatable' => FALSE,
+function _eneon_network_field_infos() {
+  $infos = array();
+
+  $infos['fields'] = array(
+      ENEON_NETWORK_ID => array(
+          'field_name' => ENEON_NETWORK_ID,
+          'type' => 'text',
+          'translatable' => FALSE,
+      ),
+      ENEON_NETWORK_DESCRIPTION => array(
+          'field_name' => ENEON_NETWORK_DESCRIPTION,
+          'type' => 'text_long',
+          'translatable' => TRUE,
+      ),
+      ENEON_NETWORK_SBA_REFERENCE => array(
+        'field_name' => ENEON_NETWORK_SBA_REFERENCE,
+        'type' => 'taxonomy_term_reference',
+        'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+        'translatable' => FALSE,
+      ),
+      ENEON_NETWORK_THEME_REFERENCE => array(
+          'field_name' => ENEON_NETWORK_THEME_REFERENCE,
+          'type' => 'taxonomy_term_reference',
+          'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+          'translatable' => FALSE,
+      ),
   );
-  field_create_field($network_sba_reference_field);
-  $network_sba_reference_instance = array(
-      'field_name' => ENEON_NETWORK_SBA_REFERENCE,
-      'entity_type' => ENEON_ENTITY_NETWORK,
-      'label' => 'Reference to SBAs',
-      'required' => FALSE,
-      'bundle' => ENEON_ENTITY_NETWORK,
+  $infos['instances'] = array(
+      ENEON_NETWORK_ID => array(
+          'field_name' => ENEON_NETWORK_ID,
+          'label' => t('ENEON Network ID'),
+          'required' => TRUE,
+      ),
+      ENEON_NETWORK_DESCRIPTION => array(
+          'field_name' => ENEON_NETWORK_DESCRIPTION,
+          'label' => t('Description'),
+          'required' => TRUE,
+      ),
+      ENEON_NETWORK_SBA_REFERENCE => array(
+          'field_name' => ENEON_NETWORK_SBA_REFERENCE,
+          'label' => t('Reference to SBAs'),
+          'required' => FALSE,
+      ),
+      ENEON_NETWORK_THEME_REFERENCE => array(
+          'field_name' => ENEON_NETWORK_THEME_REFERENCE,
+          'label' => t('Reference to Themes'),
+          'required' => FALSE,
+      ),
   );
-  field_create_instance($network_sba_reference_instance);
-  $network_theme_reference_field = array(
-      'field_name' => ENEON_NETWORK_THEME_REFERENCE,
-      'type' => taxonomy_term_reference,
-      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-      'translatable' => FALSE,
-  );
-  field_create_field($network_theme_reference_field);
-  $network_theme_reference_instance = array(
-      'field_name' => ENEON_NETWORK_THEME_REFERENCE,
-      'entity_type' => ENEON_ENTITY_NETWORK,
-      'label' => 'Reference to Themes',
-      'required' => FALSE,
-      'bundle' => ENEON_ENTITY_NETWORK,
-  );
-  field_create_instance($network_theme_reference_instance);
+
+  return $infos;
 }
 
-function _eneon_create_issue_fields() {
-  $issue_selected_sbas = array(
-      'field_name' => ENEON_ISSUE_SELECTED_SBAS,
-      'type' => 'taxonomy_term_reference',
-      'translatable' => FALSE,
-      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-  );
-  field_create_field($issue_selected_sbas);
-  $issue_selected_sbas_instance = array(
-      'field_name' => ENEON_ISSUE_SELECTED_SBAS,
-      'entity_type' => ENEON_ENTITY_ISSUE,
-      'label' => 'Selected SBAs',
-      'required' => FALSE,
-      'bundle' => ENEON_ENTITY_ISSUE,
-  );
-  field_create_instance($issue_selected_sbas_instance);
-  $issue_selected_themes = array(
-      'field_name' => ENEON_ISSUE_SELECTED_THEMES,
-      'type' => 'taxonomy_term_reference',
-      'translatable' => FALSE,
-      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-  );
-  field_create_field($issue_selected_themes);
-  $issue_selected_themes_instance = array(
-      'field_name' => ENEON_ISSUE_SELECTED_THEMES,
-      'entity_type' => ENEON_ENTITY_ISSUE,
-      'label' => 'Selected Themes',
-      'required' => FALSE,
-      'bundle' => ENEON_ENTITY_ISSUE,
-  );
-  field_create_instance($issue_selected_themes_instance);
+function _eneon_issue_field_infos() {
+  $infos = array();
 
-  $issue_selected_networks = array(
-      'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
-      'type' => 'entityreference',
-      'settings' => array(
-          'target_type' => ENEON_ENTITY_NETWORK,
+  $infos['fields'] = array(
+      ENEON_ISSUE_DESCRIPTION => array(
+          'field_name' => ENEON_ISSUE_DESCRIPTION,
+          'type' => 'text_long',
+          'translatable' => TRUE,
       ),
-      'translatable' => FALSE,
-      'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      ENEON_ISSUE_SELECTED_SBAS => array(
+          'field_name' => ENEON_ISSUE_SELECTED_SBAS,
+          'type' => 'taxonomy_term_reference',
+          'translatable' => FALSE,
+          'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      ),
+      ENEON_ISSUE_SELECTED_THEMES => array(
+          'field_name' => ENEON_ISSUE_SELECTED_THEMES,
+          'type' => 'taxonomy_term_reference',
+          'translatable' => FALSE,
+          'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      ),
+      ENEON_ISSUE_SELECTED_NETWORKS => array(
+          'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
+          'type' => 'entityreference',
+          'settings' => array(
+              'target_type' => 'node', // XXX any node is possible here
+          ),
+          'translatable' => FALSE,
+          'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+      ),
   );
-  field_create_field($issue_selected_networks);
-  $issue_selected_networks_instance = array(
-      'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
-      'entity_type' => ENEON_ENTITY_ISSUE,
-      'label' => 'Selected Networks',
-      'required' => FALSE,
-      'bundle' => ENEON_ENTITY_ISSUE,
+  $infos['instances'] = array(
+      ENEON_ISSUE_DESCRIPTION => array(
+          'field_name' => ENEON_ISSUE_DESCRIPTION,
+          'label' => t('Description'),
+          'required' => TRUE,
+      ),
+      ENEON_ISSUE_SELECTED_SBAS => array(
+          'field_name' => ENEON_ISSUE_SELECTED_SBAS,
+          'label' => t('Selected SBAs'),
+          'required' => FALSE,
+      ),
+      ENEON_ISSUE_SELECTED_THEMES => array(
+          'field_name' => ENEON_ISSUE_SELECTED_THEMES,
+          'label' => t('Selected Themes'),
+          'required' => FALSE,
+      ),
+      ENEON_ISSUE_SELECTED_NETWORKS => array(
+          'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
+          'label' => t('Selected Networks'),
+          'required' => FALSE,
+      ),
   );
-  field_create_instance($issue_selected_networks_instance);
+
+  return $infos;
+}
+
+function _eneon_create_fields($bundle, $fields=array()) {
+  if (isset($bundle)) {
+    foreach ($fields['fields'] as $field) {
+      field_create_field($field);
+    }
+    foreach ($fields['instances'] as $instance) {
+      $instance['entity_type'] = 'node';
+      $instance['bundle'] = $bundle;
+      field_create_instance($instance);
+    }
+  }
 }
 
 /**
  * Implements hook_uninstall().
  */
 function eneon_uninstall() {
-  eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_SBA);
-  eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_THEME);
+  _eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_SBA);
+  _eneon_delete_vocabulary(ENEON_VOCAB_BUNDLE_THEME);
 
-  field_delete_field(ENEON_NETWORK_SBA_REFERENCE);
-  field_delete_field(ENEON_NETWORK_THEME_REFERENCE);
-  field_delete_field(ENEON_ISSUE_SELECTED_NETWORKS);
-  field_delete_field(ENEON_ISSUE_SELECTED_THEMES);
-  field_delete_field(ENEON_ISSUE_SELECTED_SBAS);
+  _eneon_delete_node_content(ENEON_BUNDLE_NETWORK, _eneon_network_field_infos());
+  _eneon_delete_node_content(ENEON_BUNDLE_ISSUE, _eneon_issue_field_infos());
 }
 
-function eneon_delete_vocabulary($vocab) {
+function _eneon_delete_vocabulary($vocab) {
   if (isset($vocab)) {
     $vocab = taxonomy_vocabulary_machine_name_load($vocab);
     if ($vocab) {
       taxonomy_vocabulary_delete($vocab->vid);
     }
   }
+}
+
+function _eneon_delete_node_content($node_type, $field_infos) {
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
+  $results = db_query($sql, array(':type' => $node_type))->fetchCol();
+  node_delete_multiple($results);
+
+  $instances = field_info_instances('node', $node_type);
+  foreach ($instances as $instance_name => $field_instance) {
+//     drupal_set_message(t('"eneon" module: delete field instance @instance', array('@instance' => $instance_name)));
+    field_delete_instance($field_instance);
+  }
+
+  foreach (array_keys($field_infos['fields']) as $field_name) {
+//     drupal_set_message(t('"eneon" module: delete field @field', array('@field' => $field_name)));
+    field_delete_field($field_name);
+  }
+
+  node_type_delete($node_type);
 }
