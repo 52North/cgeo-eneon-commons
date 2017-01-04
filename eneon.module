@@ -29,20 +29,27 @@
 
 require_once 'eneon.info.inc';
 
-define('ENEON_ENTITY_NETWORK', 'eneon_network');
-define('ENEON_PATH_NETWORKS', 'networks');
-
-define('ENEON_ENTITY_ISSUE', 'eneon_issue');
-define('ENEON_PATH_ISSUES', 'issues');
-
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
 define('ENEON_VOCAB_BUNDLE_THEME', 'eneon_vocab_theme');
+define('ENEON_BUNDLE_NETWORK', 'eneon_network');
+define('ENEON_BUNDLE_ISSUE', 'eneon_issue');
 
-define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
-define('ENEON_ISSUE_SELECTED_THEMES', 'selected_themes');
-define('ENEON_ISSUE_SELECTED_NETWORKS', 'selected_networks');
-define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
-define('ENEON_NETWORK_THEME_REFERENCE', 'network_theme_ref');
+/*
+ * FIELD CONSTANTS
+ */
+
+// issue fields
+define('ENEON_ISSUE_DESCRIPTION', 'eneon_issue_description');
+define('ENEON_ISSUE_SELECTED_SBAS', 'eneon_selected_sbas');
+define('ENEON_ISSUE_SELECTED_THEMES', 'eneon_selected_themes');
+define('ENEON_ISSUE_SELECTED_NETWORKS', 'eneon_selected_networks');
+
+// network fields
+define('ENEON_NETWORK_ID', 'eneon_network_id');
+define('ENEON_NETWORK_TYPE', 'eneon_network_type');
+define('ENEON_NETWORK_DESCRIPTION', 'eneon_network_description');
+define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
+define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
 
 /**
  * Implements hook_init()
