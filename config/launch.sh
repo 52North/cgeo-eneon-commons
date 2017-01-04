@@ -35,12 +35,6 @@ done
 
 echo -e "\nmysql is ready\n"
 #
-# install required dependencies   
-#
-echo -e "download required drupal exensions\n"
-modules="entity entityreference views devel ctools module_filter" 
-drush dl $modules
-#
 # check for settings php and print error message if not found => requires
 # initial configuration
 #
@@ -48,8 +42,15 @@ if [ ! -e "/var/www/html/sites/default/settings.php" ]
 then
   echo -e "[!]\n[!]\n[!] Please perform the initial installation of drupal and restart the container\n[!]\n[!]"
 else
+  #
+  # install required dependencies   
+  #
+  echo -e "download required drupal exensions\n"
+  modules="entity entityreference views devel ctools module_filter taxonomy_entity_index" 
+  
+  drush dl $modules
   drush -y en $modules eneon
-  drush -y pm-disable overlay
+  drush -y dis overlay
   drush vset theme_debug 1
   drush cc all
   drush cron
