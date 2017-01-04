@@ -61,7 +61,7 @@ function eneon_install() {
 
   $network_sba_reference_field = array(
       'field_name' => ENEON_NETWORK_SBA_REFERENCE,
-      'type' => taxonomy_term_reference,
+      'type' => 'taxonomy_term_reference',
       'cardinality' => FIELD_CARDINALITY_UNLIMITED,
       'translatable' => FALSE,
   );
@@ -76,7 +76,7 @@ function eneon_install() {
   field_create_instance($network_sba_reference_instance);
   $network_theme_reference_field = array(
       'field_name' => ENEON_NETWORK_THEME_REFERENCE,
-      'type' => taxonomy_term_reference,
+      'type' => 'taxonomy_term_reference',
       'cardinality' => FIELD_CARDINALITY_UNLIMITED,
       'translatable' => FALSE,
   );
