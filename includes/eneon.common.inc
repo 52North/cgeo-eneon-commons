@@ -236,7 +236,7 @@ function eneon_network_query($filter=FALSE) {
   }
 
   $networks = node_load_multiple($nids);
-  sort($networks);
+  asort($networks);
   return $networks;
 }
 /**
@@ -274,6 +274,7 @@ function eneon_issue_query($filter=FALSE) {
   }
 
   $issues = _eneon_load_multiple(ENEON_BUNDLE_ISSUE);
+  asort($issues);
   return $issues;
 }
 
