@@ -37,27 +37,13 @@
 function eneon_entity_property_info() {
   $info = array();
 
-  $info[ENEON_ENTITY_ISSUE] = array(
+  $info[ENEON_BUNDLE_ISSUE] = array(
       'properties' => array(
-          'id' => array(
-              'label' => t('Issue ID'),
-              'description' => t('The ID of the issue.'),
-              'type' => 'integer',
-              'schema field' => 'id',
-          ),
-          'title' => array(
-              'label' => t('Issue title'),
-              'description' => t('Title of the issue.'),
-              'type' => 'text',
-              'setter callback' => 'entity_property_verbatim_set',
-              'schema field' => 'title',
-          ),
-          'description' => array(
+          ENEON_ISSUE_DESCRIPTION => array(
               'label' => t('Issue description'),
               'description' => t('Description of the issue.'),
               'type' => 'text',
               'setter callback' => 'entity_property_verbatim_set',
-              'schema field' => 'description',
           ),
           ENEON_ISSUE_SELECTED_SBAS => array(
               'label' => t('Issue selected SBAs'),
@@ -74,31 +60,30 @@ function eneon_entity_property_info() {
           ENEON_ISSUE_SELECTED_NETWORKS => array(
               'label' => t('Issue selected networks'),
               'description' => t('Selected networks related to this issue.'),
-              'type' => 'list<' . ENEON_ENTITY_NETWORK . '>',
+              'type' => 'list<' . ENEON_BUNDLE_NETWORK . '>',
               'setter callback' => 'entity_property_verbatim_set',
           ),
       ),
   );
 
-  $info[ENEON_ENTITY_NETWORK] = array(
+  $info[ENEON_BUNDLE_NETWORK] = array(
       'properties' => array(
-          'id' => array(
+          ENEON_NETWORK_ID => array(
               'label' => t('Network ID'),
               'description' => t('The ID of the network.'),
               'type' => 'integer',
-              'schema field' => 'id',
           ),
-          'title' => array(
-              'label' => t('Network title'),
-              'description' => t('Title of the network.'),
-              'type' => 'text',
-              'schema field' => 'title',
-          ),
-          'description' => array(
+          ENEON_NETWORK_DESCRIPTION => array(
               'label' => t('Network description'),
               'description' => t('Description of the network.'),
+              'type' => 'text_long',
+              'setter callback' => 'entity_property_verbatim_set',
+          ),
+          ENEON_NETWORK_TYPE => array(
+              'label' => t('Network type'),
+              'description' => t('Type of the ENEON network'),
               'type' => 'text',
-              'schema field' => 'description',
+              'setter callback' => 'entity_property_verbatim_set',
           ),
           ENEON_NETWORK_SBA_REFERENCE => array(
               'label' => t('Network SBA references'),
