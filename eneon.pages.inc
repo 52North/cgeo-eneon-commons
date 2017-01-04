@@ -59,14 +59,16 @@ function eneon_view_issue_list() {
   return $output;
 }
 
-// function eneon_view_network_modal($js = NULL, $entity= null) {
-//   $contents = render(node_view($entity, 'teaser'));
-//   if ($js) {
-//     // Required includes for ctools to work:
-//     ctools_include('modal');
-//     ctools_include('ajax');
-//     return ctools_modal_render($entity->title, $contents) ;
-//   } else {
-//     return $contents;
-//   }
-// }
+function eneon_view_network_modal($js = NULL, $nid= null) {
+  $node = node_load($nid);
+  $output = node_view($node, 'full');
+  $contents = render($output);
+  if ($js) {
+    // Required includes for ctools to work:
+    ctools_include('modal');
+    ctools_include('ajax');
+    return ctools_modal_render($node->title, $contents) ;
+  } else {
+    return $contents;
+  }
+}

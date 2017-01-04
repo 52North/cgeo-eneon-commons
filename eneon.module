@@ -65,7 +65,7 @@ function eneon_init() {
  */
 function eneon_menu() {
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
-//   $autoload_network_modal_wildcard = 'eneon/%ctools_js/%';
+  $autoload_network_modal_wildcard = 'eneon/%ctools_js/%';
 
   $items['issues'] = array(
       'title' => t('Issues'),
@@ -98,13 +98,13 @@ function eneon_menu() {
       'file' => 'eneon.pages.inc',
   );
 
-//   $items[$autoload_network_modal_wildcard] = array(
-//       'title' => t('Network Details'),
-//       'page arguments' => array(1, 2),
-//       'page callback' => 'eneon_view_network_modal',
-//       'access callback' => TRUE,
-//       'file' => 'eneon.pages.inc',
-//   );
+  $items[$autoload_network_modal_wildcard] = array(
+      'title' => t('Network Details'),
+      'page arguments' => array(1, 2),
+      'page callback' => 'eneon_view_network_modal',
+      'access callback' => TRUE,
+      'file' => 'eneon.pages.inc',
+  );
   return $items;
 }
 
