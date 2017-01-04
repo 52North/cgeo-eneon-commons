@@ -223,7 +223,7 @@ function eneon_network_query($filter=array()) {
   $networks = eneon_not_empty_array($nids)
       ? eneon_network_load_multiple($nids)
       : array();
-  sort($networks);
+  asort($networks);
   return $networks;
 }
 
