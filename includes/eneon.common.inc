@@ -190,6 +190,7 @@ function eneon_create_or_load_network($network) {
       : entity_create(ENEON_ENTITY_NETWORK, array (
           'nid' => $nid,
           'title' => $title,
+          array('is_new_revision' => FALSE)
         ));
 }
 

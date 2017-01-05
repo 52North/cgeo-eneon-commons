@@ -88,7 +88,7 @@ function eneon_issue_wizard($form, &$form_state, $entity=NULL) {
   $create_new = !isset($entity) && !isset($form_state[ENEON_ENTITY_ISSUE]);
   $entity = isset($form_state[ENEON_ENTITY_ISSUE]) ? $form_state[ENEON_ENTITY_ISSUE] : $entity;
   $form_state[ENEON_ENTITY_ISSUE] = $create_new
-      ? entity_create(ENEON_ENTITY_ISSUE, array('is_new_revision' => TRUE))
+      ? entity_create(ENEON_ENTITY_ISSUE, array('is_new_revision' => FALSE))
       : $entity;
 
   // Initialize a description of the steps for the wizard.
