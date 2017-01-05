@@ -82,10 +82,10 @@ function eneon_view_network_modal($js = NULL, $entity= null) {
   $output = entity_view(ENEON_ENTITY_NETWORK, array($entity), 'full');
   $contents = render($output);
   if ($js) {
-    // Required includes for ctools to work:
     ctools_include('modal');
     ctools_include('ajax');
-    return ctools_modal_render($node->title, $contents) ;
+    ctools_modal_add_js();
+    return ctools_modal_render($entity->title, $contents) ;
   } else {
     return $contents;
   }

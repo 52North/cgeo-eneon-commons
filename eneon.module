@@ -186,6 +186,7 @@ function eneon_access_callback($op, $issue = NULL, $account = NULL) {
     return FALSE;
   }
 }
+
 function eneon_network_load($id = NULL, $reset = FALSE) {
   $entities = eneon_network_load_multiple(array ($id), $reset);
   return reset($entities);
