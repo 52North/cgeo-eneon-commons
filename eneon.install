@@ -258,6 +258,18 @@ function eneon_schema() {
               'size' => 'medium',
               'not null' => FALSE,
           ),
+          'url' => array (
+              'description' => 'Network URL',
+              'type' => 'text',
+              'size' => 'medium',
+              'not null' => FALSE,
+          ),
+          'logo_url' => array (
+              'description' => 'Network logo',
+              'type' => 'text',
+              'size' => 'medium',
+              'not null' => FALSE,
+          ),
       ),
       'primary key' => array (
           'id',

@@ -100,6 +100,20 @@ function eneon_entity_property_info() {
               'type' => 'text',
               'schema field' => 'description',
           ),
+          'url' => array(
+              'label' => t('Network URL'),
+              'description' => t('URL of the network.'),
+              'type' => 'text',
+              'setter callback' => 'entity_property_verbatim_set',
+              'schema field' => 'url',
+          ),
+          'logo_url' => array(
+              'label' => t('Network logo'),
+              'description' => t('Logo of the network.'),
+              'type' => 'text',
+              'setter callback' => 'entity_property_verbatim_set',
+              'schema field' => 'logo_url',
+          ),
           ENEON_NETWORK_SBA_REFERENCE => array(
               'label' => t('Network SBA references'),
               'description' => t('SBAs related to this network.'),
