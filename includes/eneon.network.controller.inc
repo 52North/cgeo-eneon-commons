@@ -47,22 +47,36 @@ class NetworkEntityController extends EntityAPIController {
   public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
     $content = parent::buildContent($entity, $view_mode, $langcode, $content);
 
+    $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity);
+    $title = $wrapper->title->value();
+
     $content['description'] = array(
         '#type' => 'markup',
-        '#markup' => check_plain($entity->description),
+        '#markup' => check_plain($wrapper->description->value()),
         '#prefix' => '<div class="eneon-entity description">',
         '#suffix' => '</div>',
         '#weight' => 0,
     );
 
-    $content[ENEON_NETWORK_SBA_REFERENCE]['#weight'] = 1;
-    $content[ENEON_NETWORK_THEME_REFERENCE]['#weight'] = 1;
-
     switch ($view_mode) {
       case 'teaser':
+        unset($content['logo_url']);
         unset($content[ENEON_NETWORK_SBA_REFERENCE]);
         unset($content[ENEON_NETWORK_THEME_REFERENCE]);
         break;
+      case 'full':
+        $url = $wrapper->url->value();
+        if ( !empty($url)) {
+          $content['url'] = array(
+              '#type' => 'markup',
+              '#prefix' => '<div class="network-link">',
+              '#suffix' => '</div>',
+              '#markup' => l($url, $url, array('attributes' => array('title' => t('Link to @title', array('@title' => $title))))),
+          );
+        }
+      default:
+        $content[ENEON_NETWORK_SBA_REFERENCE]['#weight'] = 1;
+        $content[ENEON_NETWORK_THEME_REFERENCE]['#weight'] = 1;
     }
 
     return $content;

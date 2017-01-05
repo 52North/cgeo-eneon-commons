@@ -7,6 +7,10 @@ body {
     margin-bottom: 1em;
 }
 
+.entity-eneon-network .network-link {
+    margin-bottom: 1em;
+}
+
 #eneon-issue-wizard .suggested-networks-hint {
     margin-bottom: 1em;
 }
