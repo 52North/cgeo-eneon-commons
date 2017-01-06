@@ -46,7 +46,7 @@ else
   # install required dependencies   
   #
   echo -e "download required drupal exensions\n"
-  modules="entity entityreference views devel ctools module_filter taxonomy_entity_index imagecache_external" 
+  modules="entity entityreference views devel ctools module_filter imagecache_external" 
   
   drush dl $modules
   drush -y en $modules eneon
