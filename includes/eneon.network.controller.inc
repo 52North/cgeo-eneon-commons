@@ -66,6 +66,19 @@ class NetworkEntityController extends EntityAPIController {
         break;
       case 'full':
         $url = $wrapper->url->value();
+        $logo_url = $wrapper->logo_url->value();
+        if ( !empty($logo_url)) {
+          $image_markup = theme('imagecache_external', array(
+              'path' => $logo_url,
+              'style_name' => 'thumbnail',
+              'title' => $title,
+              'alt' => $title,
+          ));
+          $content['logo'] = array(
+              '#type' => 'markup',
+              '#markup' => $image_markup,
+          );
+        }
         if ( !empty($url)) {
           $content['url'] = array(
               '#type' => 'markup',
