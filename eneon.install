@@ -31,14 +31,25 @@
  * Implements hook_enable()
  */
 function eneon_enable() {
-//   eneon_install(); // debug: comment in and enable module via UI
   module_load_include('inc', 'eneon', 'includes/eneon.common');
+  $external_image_cache_whitelist = variable_get('imagecache_external_hosts');
+  if (strpos( $external_image_cache_whitelist, ENEON_DOWNLOAD_BASE_URL) === false) {
+    $external_image_cache_whitelist .= ENEON_DOWNLOAD_BASE_URL;
+    variable_set('imagecache_external_hosts', $external_image_cache_whitelist);
+  }
+//   eneon_install(); // debug: comment in and enable module via UI
   eneon_update_networks();
 }
 /**
  * Implements hook_disable)
  */
 function eneon_disable() {
+  module_load_include('inc', 'eneon', 'includes/eneon.common');
+  $external_image_cache_whitelist = variable_get('imagecache_external_hosts');
+  if (strpos( $external_image_cache_whitelist, ENEON_DOWNLOAD_BASE_URL) !== false) {
+    $external_image_cache_whitelist =  str_replace($external_image_cache_whitelist, ENEON_DOWNLOAD_BASE_URL, '');
+    variable_set('imagecache_external_hosts', $external_image_cache_whitelist);
+  }
 //   eneon_uninstall(); // debug: comment in and enable module via UI
 }
 /**
