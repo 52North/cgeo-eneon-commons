@@ -132,16 +132,16 @@ function eneon_node_info() {
   return array (
       ENEON_BUNDLE_ISSUE => array (
           'name' => t('ENEON Issue'),
-          'base' => ENEON_BUNDLE_NETWORK,
+          'base' => ENEON_BUNDLE_ISSUE,
           'description' => t('An ENEON Issue'),
           'has_title' => TRUE,
           'title_label' => t('Issue'),
-          'locked' => TRUE,
+//           'locked' => TRUE,
       ),
 
       ENEON_BUNDLE_NETWORK => array (
           'name' => t('ENEON Network'),
-          'base' => ENEON_BUNDLE_ISSUE,
+          'base' => ENEON_BUNDLE_NETWORK,
           'description' => t('An ENEON Network'),
           'has_title' => TRUE,
           'title_label' => t('Network'),
