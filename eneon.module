@@ -61,6 +61,23 @@ function eneon_init() {
 }
 
 /**
+ * Implements hook_node_access().
+ *
+ */
+function eneon_node_access($node, $op, $account) {
+  $grants = array();
+
+  if ( !(isset($node->type) && ($node->type == ENEON_BUNDLE_NETWORK || $node->type == ENEON_BUNDLE_ISSUE))) {
+    return NODE_ACCESS_IGNORE;
+  }
+  if ($op == 'create' || $op == 'delete' || $op == 'update' || $op == 'edit') {
+    return NODE_ACCESS_DENY;
+  }
+
+  return NODE_ACCESS_IGNORE;
+}
+
+/**
  * Implements hook_menu()
  */
 function eneon_menu() {
