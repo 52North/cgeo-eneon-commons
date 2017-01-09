@@ -330,15 +330,7 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   );
 
   if (eneon_not_empty_array($networks)) {
-    $suggested_networks = array_column($networks, 'title', 'nid');
-
-    ctools_include('modal');
-    ctools_include('ajax');
-    ctools_modal_add_js();
-    $suggested_networks = array_map(function($title, $id) {
-      return ctools_modal_text_button($title, 'eneon/nojs/' . $id, $title);
-    }, $suggested_networks, array_keys($suggested_networks));
-
+    $suggested_networks = _eneon_create_checkboxes_with_modal_links($networks);
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
         '#options' => $suggested_networks,
@@ -353,6 +345,36 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   }
   return $form;
 }
+
+function _eneon_create_checkboxes_with_modal_links($networks) {
+  $suggested_networks = array_column($networks, 'title', 'nid');
+
+  // set modal dialog styling
+  ctools_include('modal');
+  ctools_include('ajax');
+  ctools_modal_add_js();
+  $modal_style = array(
+      'CToolsModal' => array(
+          'modalSize' => array(
+              'type' => 'fixed',
+              'width' => 600,
+              'height' => 300,
+              // How much to remove from the inner content to make space for the
+              // theming.
+              'contentRight' => 28,
+              'contentBottom' => 39,
+          ),
+          'closeText' => '',
+      ),
+  );
+  $current_js = drupal_add_js($modal_style, 'setting');
+
+  // create link opening modal dialog
+  return array_map(function($title, $id) {
+       return ctools_modal_text_button($title, 'eneon/nojs/' . $id, $title);
+    }, $suggested_networks, array_keys($suggested_networks));
+}
+
 
 /**
  * Wizard form submit handler.
