@@ -37,6 +37,7 @@ function eneon_view_network_list() {
   }
   return drupal_render($output);
 }
+
 function eneon_view_issue_list() {
   // Show link to the entity "Add" page.
   $output = '<br/>';
