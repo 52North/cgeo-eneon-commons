@@ -52,6 +52,20 @@ function eneon_install() {
   _eneon_create_fields(ENEON_BUNDLE_NETWORK, _eneon_network_field_infos());
   _eneon_create_fields(ENEON_BUNDLE_ISSUE, _eneon_issue_field_infos());
   module_invoke('eneon', 'entity_property_info');
+
+//   node_types_rebuild();
+//   $types = node_type_get_types();
+//   node_add_body_field($types[ENEON_BUNDLE_ISSUE]);
+//   node_type_save($types[ENEON_BUNDLE_ISSUE]);
+
+  $permissions = array(
+      'create ' . ENEON_BUNDLE_ISSUE .' content',
+      'edit own ' . ENEON_BUNDLE_ISSUE .' content',
+  );
+
+//   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('permission name')); // Anonymous users
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, $permissions); // Authentificated users
+
 }
 
 function _eneon_create_vocabularies() {
