@@ -151,12 +151,34 @@ function _eneon_issue_field_infos() {
           'type' => 'taxonomy_term_reference',
           'translatable' => FALSE,
           'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+          'settings' => array(
+            'allowed_values' => array(
+                0 => array(
+                  'vocabulary' => ENEON_VOCAB_BUNDLE_SBA,
+                  'parent' => 0,
+              ),
+            ),
+          ),
+          'widget' => array(
+              'type' => 'options_select'
+          ),
       ),
       ENEON_ISSUE_SELECTED_THEMES => array(
           'field_name' => ENEON_ISSUE_SELECTED_THEMES,
           'type' => 'taxonomy_term_reference',
           'translatable' => FALSE,
           'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+          'settings' => array(
+              'allowed_values' => array(
+                  0 => array(
+                      'vocabulary' => ENEON_VOCAB_BUNDLE_THEME,
+                      'parent' => 0,
+                  ),
+              ),
+          ),
+          'widget' => array(
+              'type' => 'options_select'
+          ),
       ),
       ENEON_ISSUE_SELECTED_NETWORKS => array(
           'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
