@@ -98,15 +98,14 @@ function eneon_menu() {
       'file' => 'eneon.issue.wizard.inc',
       'type' => MENU_LOCAL_TASK,
   );
-  // XXX show wizard when editing
-//   $items[$autoload_issue_wildcard . '/edit'] = array(
-//       'title' => 'Edit issue',
-//       'page callback' => 'drupal_get_form',
-//       'access arguments' => array('access content'),
-//       'page arguments' => array('eneon_issue_wizard', 1),
-//       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
-//       'file' => 'eneon.issue.wizard.inc',
-//   );
+  $items['issues/edit/%'] = array(
+      'title' => 'Edit issue',
+      'page callback' => 'drupal_get_form',
+      'access arguments' => array('access content'),
+      'page arguments' => array('eneon_issue_wizard', 2),
+      'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
+      'file' => 'eneon.issue.wizard.inc',
+  );
 
   $items['networks'] = array(
       'title' => t('Networks'),
