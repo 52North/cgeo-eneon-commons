@@ -408,6 +408,7 @@ function eneon_issue_wizard_submit($form, &$form_state) {
 }
 
 function _eneon_write_entity_values(&$form_state) {
+  global $user;
   $form_value = function($name, $step_nr, $default=NULL) use (&$form_state) {
     $step_values = $form_state['step_information'][$step_nr];
     return isset($step_values['stored_values'][$name])
@@ -416,7 +417,9 @@ function _eneon_write_entity_values(&$form_state) {
   };
 
   $entity = &$form_state['eneon_issue'];
+
   $wrapper = entity_metadata_wrapper('node', $entity);
+  $wrapper->author->set($user);
 
   $wrapper->title->set($form_value('title', 1));
   $wrapper->{ENEON_ISSUE_DESCRIPTION}->set($form_value('description', 1));
