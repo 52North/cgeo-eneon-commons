@@ -28,6 +28,7 @@
  */
 
 require_once 'eneon.info.inc';
+require_once 'eneon.issue.wizard.inc';
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
 define('ENEON_VOCAB_BUNDLE_THEME', 'eneon_vocab_theme');

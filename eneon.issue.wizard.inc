@@ -37,8 +37,14 @@
 
 // TODO remove comments from example
 
-
 require_once 'includes/eneon.common.inc';
+
+function eneon_form_eneon_issue_node_form_alter(&$form, &$form_state, $form_id) {
+  $node = $form_state['node'];
+  if (isset($node->nid) && isset($node->type) && $node->type == ENEON_BUNDLE_ISSUE) {
+    drupal_goto('/issues/edit/' . $node->nid);
+  }
+}
 
 /**
  * Returns the list of steps and their associated forms.
