@@ -71,7 +71,7 @@ function eneon_menu() {
       'title' => t('Add issue'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('eneon_issue_wizard'),
-      'access callback' => TRUE,
+      'access arguments' => array('create ' . ENEON_BUNDLE_ISSUE . ' content'),
       'file' => 'eneon.issue.wizard.inc',
       'type' => MENU_NORMAL_ITEM,
   );
