@@ -39,25 +39,12 @@ function eneon_view_network_list() {
 }
 
 function eneon_view_issue_list() {
-  // Show link to the entity "Add" page.
-  $output = '<br/>';
-  $output .= theme_link(
-      array(
-          'text' => t('Add new Issue'),
-          'path' => 'issues/add',
-          'options' => array(
-              'attributes' => array(),
-              'html' => TRUE,
-          ),
-      )
-  );
-
+  $output = array();
   $entities = eneon_issue_query();
   foreach ($entities as $node) {
-    $node_view = node_view($node, 'teaser');
-    $output .= drupal_render($node_view);
+    $output[] = node_view($node, 'teaser');
   }
-  return $output;
+  return drupal_render($output);
 }
 
 function eneon_view_network_modal($js = NULL, $nid= null) {

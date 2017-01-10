@@ -73,7 +73,7 @@ function eneon_menu() {
       'page arguments' => array('eneon_issue_wizard'),
       'access callback' => TRUE,
       'file' => 'eneon.issue.wizard.inc',
-      'type' => MENU_LOCAL_TASK,
+      'type' => MENU_NORMAL_ITEM,
   );
   $items['issues/edit/%'] = array(
       'title' => 'Edit issue',
