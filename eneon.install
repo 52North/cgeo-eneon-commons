@@ -124,13 +124,13 @@ function _eneon_network_field_infos() {
         'field_name' => ENEON_NETWORK_SBA_REFERENCE,
         'type' => 'taxonomy_term_reference',
         'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-        'translatable' => FALSE,
+        'translatable' => TRUE,
       ),
       ENEON_NETWORK_THEME_REFERENCE => array(
           'field_name' => ENEON_NETWORK_THEME_REFERENCE,
           'type' => 'taxonomy_term_reference',
           'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-          'translatable' => FALSE,
+          'translatable' => TRUE,
       ),
   );
   $infos['instances'] = array(
