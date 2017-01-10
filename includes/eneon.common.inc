@@ -244,7 +244,7 @@ function eneon_network_query($filter=FALSE) {
     }
   }
 
-  $networks = node_load_multiple($nids);
+  $networks = _eneon_load_multiple(ENEON_BUNDLE_NETWORK);
   asort($networks);
   return $networks;
 }
