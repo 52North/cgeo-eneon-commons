@@ -28,97 +28,66 @@
  */
 
 require_once 'eneon.info.inc';
-require_once 'includes/eneon.issue.controller.inc';
-require_once 'includes/eneon.network.controller.inc';
-
-define('ENEON_TABLE_NETWORKS', 'eneon_networks');
-define('ENEON_ENTITY_NETWORK', 'eneon_network');
-define('ENEON_PATH_NETWORKS', 'networks');
-
-define('ENEON_ENTITY_ISSUE', 'eneon_issue');
-define('ENEON_TABLE_ISSUES', 'eneon_issues');
-define('ENEON_PATH_ISSUES', 'issues');
+require_once 'eneon.issue.wizard.inc';
 
 define('ENEON_VOCAB_BUNDLE_SBA', 'eneon_vocab_sba');
 define('ENEON_VOCAB_BUNDLE_THEME', 'eneon_vocab_theme');
+define('ENEON_BUNDLE_NETWORK', 'eneon_network');
+define('ENEON_BUNDLE_ISSUE', 'eneon_issue');
 
-define('ENEON_ISSUE_SELECTED_SBAS', 'selected_sbas');
-define('ENEON_ISSUE_SELECTED_THEMES', 'selected_themes');
-define('ENEON_ISSUE_SELECTED_NETWORKS', 'selected_networks');
-define('ENEON_NETWORK_SBA_REFERENCE', 'network_sba_ref');
-define('ENEON_NETWORK_THEME_REFERENCE', 'network_theme_ref');
-
-/**
- * Implements hook_init()
+/*
+ * FIELD CONSTANTS
  */
-function eneon_init() {
-// comment in for debug
-//   module_load_include('inc', 'eneon', 'includes/eneon.common');
-//   eneon_update_networks();
-}
+
+// issue fields
+define('ENEON_ISSUE_DESCRIPTION', 'eneon_issue_description');
+define('ENEON_ISSUE_SELECTED_SBAS', 'eneon_selected_sbas');
+define('ENEON_ISSUE_SELECTED_THEMES', 'eneon_selected_themes');
+define('ENEON_ISSUE_SELECTED_NETWORKS', 'eneon_selected_networks');
+
+// network fields
+define('ENEON_NETWORK_ID', 'eneon_network_id');
+define('ENEON_NETWORK_TYPE', 'eneon_network_type');
+define('ENEON_NETWORK_DESCRIPTION', 'eneon_network_description');
+define('ENEON_NETWORK_URL', 'eneon_network_url');
+define('ENEON_NETWORK_LOGO_URL', 'eneon_network_logo_url');
+define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
+define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
 
 /**
  * Implements hook_menu()
  */
 function eneon_menu() {
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
-  $autoload_issue_wildcard = ENEON_PATH_ISSUES . '/%' . ENEON_ENTITY_ISSUE;
-  $autoload_network_wildcard = ENEON_PATH_NETWORKS . '/%' . ENEON_ENTITY_NETWORK;
-  $autoload_network_modal_wildcard = 'eneon/%ctools_js/%' . ENEON_ENTITY_NETWORK;
+  $autoload_network_modal_wildcard = 'eneon/%ctools_js/%';
 
-  $items[ENEON_PATH_ISSUES] = array(
+  $items['issues'] = array(
       'title' => t('Issues'),
       'page callback' => 'eneon_view_issue_list',
-      'access arguments' => array('access content'),
+      'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
-  $items[ENEON_PATH_ISSUES . '/add'] = array(
+  $items['issues/add'] = array(
       'title' => t('Add issue'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('eneon_issue_wizard'),
-      'access arguments' => array('access content'),
+      'access callback' => TRUE,
       'file' => 'eneon.issue.wizard.inc',
       'type' => MENU_LOCAL_TASK,
   );
-  $items[$autoload_issue_wildcard] = array(
-      'title' => t('Issue'),
-      'page callback' => 'eneon_view_entity_item',
-      'page arguments' => array(1),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-  $items[$autoload_issue_wildcard . '/view'] = array(
-    'title' => 'View Issue',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-  $items[$autoload_issue_wildcard . '/edit'] = array(
+  $items['issues/edit/%'] = array(
       'title' => 'Edit issue',
       'page callback' => 'drupal_get_form',
       'access arguments' => array('access content'),
-      'page arguments' => array('eneon_issue_wizard', 1),
+      'page arguments' => array('eneon_issue_wizard', 2),
       'context' => MENU_CONTEXT_PAGE | MENU_CONTEXT_INLINE,
       'file' => 'eneon.issue.wizard.inc',
   );
-  $items[$autoload_issue_wildcard . '/delete'] = array(
-      'title' => t('Delete issue'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('eneon_issue_form_delete', 1),
-      'access arguments' => array('access content'),
-      'file' => 'eneon.issue.ui.inc',
-  );
 
-  $items[ENEON_PATH_NETWORKS] = array(
+  $items['networks'] = array(
       'title' => t('Networks'),
       'page callback' => 'eneon_view_network_list',
-      'access arguments' => array('access content'),
-      'file' => 'eneon.pages.inc',
-  );
-  $items[$autoload_network_wildcard] = array(
-      'title' => t('Network'),
-      'page callback' => 'eneon_view_entity_item',
-      'page arguments' => array(1, ENEON_ENTITY_NETWORK),
-      'access arguments' => array('access content'),
+      'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
 
@@ -133,76 +102,28 @@ function eneon_menu() {
 }
 
 /**
- * Implements hook_entity_info().
+ * Implements hook_node_info().
  */
-function eneon_entity_info() {
+function eneon_node_info() {
   return array (
-      ENEON_ENTITY_ISSUE => array (
-          'label' => t('ENEON Issue'),
-          'plural label' => t('ENEON Issues'),
-          'base table' => 'eneon_issues',
-          'entity keys' => array (
-              'id' => 'id',
-              'label' => 'title',
-          ),
-          'fieldable' => TRUE,
-          'entity class' => 'IssueEntity',
-          'controller class' => 'IssueEntityController',
-          'views controller class' => 'EntityDefaultViewsController',
-          'uri callback' => 'entity_class_uri',
-          'label callback' => 'entity_class_label',
-          'access callback' => 'eneon_access_callback',
-          'module' => 'eneon'
+      ENEON_BUNDLE_ISSUE => array (
+          'name' => t('ENEON Issue'),
+          'base' => ENEON_BUNDLE_ISSUE,
+          'description' => t('An ENEON Issue'),
+          'has_title' => TRUE,
+          'title_label' => t('Issue'),
+//           'locked' => TRUE,
       ),
 
-      ENEON_ENTITY_NETWORK => array (
-          'label' => t('ENEON Network'),
-          'plural label' => t('ENEON Networks'),
-          'entity class' => 'NetworkEntity',
-          'base table' => 'eneon_networks',
-          'entity keys' => array (
-              'id' => 'id',
-              'label' => 'title',
-          ),
-          'fieldable' => TRUE,
-          'controller class' => 'NetworkEntityController',
-          'views controller class' => 'EntityDefaultViewsController',
-          'uri callback' => 'entity_class_uri',
-          'label callback' => 'entity_class_label',
-          'access callback' => 'eneon_access_callback',
-          'module' => 'eneon'
+      ENEON_BUNDLE_NETWORK => array (
+          'name' => t('ENEON Network'),
+          'base' => ENEON_BUNDLE_NETWORK,
+          'description' => t('An ENEON Network'),
+          'has_title' => TRUE,
+          'title_label' => t('Network'),
+          'locked' => TRUE,
       )
   );
-}
-
-function eneon_access_callback($op, $issue = NULL, $account = NULL) {
-
-  // TODO manage access rights
-
-  if ($op == 'view' || $op == 'update' || $op == 'create' || $op == 'delete') {
-    return TRUE;
-  }
-  else {
-    return FALSE;
-  }
-}
-
-function eneon_network_load($id = NULL, $reset = FALSE) {
-  $entities = eneon_network_load_multiple(array ($id), $reset);
-  return reset($entities);
-}
-
-function eneon_network_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
-  return entity_load(ENEON_ENTITY_NETWORK, $ids, $conditions, $reset);
-}
-
-function eneon_issue_load($id = NULL, $reset = FALSE) {
-  $entities = eneon_issue_load_multiple(array ($id), $reset);
-  return reset($entities);
-}
-
-function eneon_issue_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
-  return entity_load(ENEON_ENTITY_ISSUE, $ids, $conditions, $reset);
 }
 
 ///**

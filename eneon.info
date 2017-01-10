@@ -38,5 +38,4 @@ files[] = includes/eneon.network.controller.inc
 
 dependencies[] = entity
 dependencies[] = ctools
-dependencies[] = entityreference
-dependencies[] = taxonomy_entity_index
+dependencies[] = views

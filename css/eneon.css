@@ -20,6 +20,16 @@ body {
     max-height: 400px;
 }
 
+#eneon-issue-wizard .taxonomy-items {
+    margin: .25em .25em;
+    padding: 0;
+}
+
+#eneon-issue-wizard .taxonomy-items li {
+    display: inline;
+    padding-right: 1em;
+}
+
 .field-name-eneon-network-description {
     margin-bottom: 1em;
 }

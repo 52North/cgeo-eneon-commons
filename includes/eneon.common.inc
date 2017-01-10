@@ -27,17 +27,11 @@
   * Public License for more details.
   */
 
-define('ENEON_DOWNLOAD_BASE_URL', 'http://www.eneon.net/graph/');
+define('ENEON_HOST', 'www.eneon.net');
 
-function _eneon_download_file($url) {
-  $response = drupal_http_request($url);
-  return ! empty($response) && $response->code == 200
-      ? $response->data
-      : NULL;
-}
-
-function eneon_download_network_graph() {
-  $data = _eneon_download_file(ENEON_DOWNLOAD_BASE_URL . 'networks.json');
+function _eneon_download_network_graph() {
+  $response = drupal_http_request('http://' . ENEON_HOST . '/graph/networks.json');
+  $data = ! empty($response) && $response->code == 200 ? $response->data : NULL;
   if (empty($data)) {
     drupal_set_message($message = t('"eneon" module: no network graph data downloaded.'), $type = 'warning');
     return FALSE;
@@ -54,14 +48,14 @@ function eneon_download_network_graph() {
 }
 
 function eneon_update_networks() {
-  $eneon_graph = eneon_download_network_graph();
+  $eneon_graph = _eneon_download_network_graph();
   if ( !$eneon_graph) {
-    drupal_set_message($message = t('"eneon" module: could save/update networks.'), $type = 'warning');
+    drupal_set_message($message = t('"eneon" module: could not save/update networks.'), $type = 'warning');
     return;
   }
 
   $networks = $eneon_graph['network'];
-  $network_property_infos = eneon_entity_property_info()[ENEON_ENTITY_NETWORK];
+  $network_property_infos = eneon_entity_property_info()[ENEON_BUNDLE_NETWORK];
 
   /*
    * Some networks refer to 'All' SBAs so we have to iterate through
@@ -71,8 +65,8 @@ function eneon_update_networks() {
    */
 
   // first iteration creates all SBAs/themes/etc.
-  eneon_create_taxonomy_terms($networks, 'SBA', ENEON_VOCAB_BUNDLE_SBA);
-  eneon_create_taxonomy_terms($networks, 'theme', ENEON_VOCAB_BUNDLE_THEME);
+  _eneon_create_taxonomy_terms($networks, 'SBA', ENEON_VOCAB_BUNDLE_SBA);
+  _eneon_create_taxonomy_terms($networks, 'theme', ENEON_VOCAB_BUNDLE_THEME);
 
   // second iteration creates all networks
   foreach ($networks as $network) {
@@ -80,33 +74,30 @@ function eneon_update_networks() {
       continue;
     }
 
-    $entity = eneon_create_or_load_network($network);
+    $entity = _eneon_create_or_load_network($network);
 
     if ($entity) {
       // Add additional attributes
-      $entity->description = $network ['description'];
-      $entity->type = $network ['type'];
-
-      if (isset($network['url'])) {
-        $entity->url = $network['url'];
-      }
-      if (isset($network['logo'])) {
-        $entity->logo_url = ENEON_DOWNLOAD_BASE_URL . $network['logo'];
-      }
-
-      // Add additional attributes
-      $wrapper = entity_metadata_wrapper(ENEON_ENTITY_NETWORK, $entity, array(
+      $wrapper = entity_metadata_wrapper('node', $entity, array(
           'property info' => $network_property_infos['properties'], // when hook was not called yet
       ));
-      eneon_add_theme_references($wrapper, $network, $network_property_infos);
-      eneon_add_sba_references($wrapper, $network);
+      $wrapper->{ENEON_NETWORK_TYPE}->set($network ['type']);
+      $wrapper->{ENEON_NETWORK_DESCRIPTION}->set($network ['description']);
+      if (isset($network['url'])) {
+        $wrapper->{ENEON_NETWORK_URL}->set($network['url']);
+      }
+      if (isset($network[ENEON_NETWORK_LOGO_URL])) {
+        $wrapper->{ENEON_NETWORK_LOGO_URL}->set(ENEON_HOST . $network['logo']);
+      }
+      _eneon_add_theme_references($wrapper, $network, $network_property_infos);
+      _eneon_add_sba_references($wrapper, $network);
       $wrapper->save();
     }
   }
   drupal_set_message($message = t('"eneon" module: imported #@count networks.', array('@count' => sizeof($networks))), $type = 'status');
 }
 
-function eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
+function _eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
   $vocab = taxonomy_vocabulary_machine_name_load($vocab_name);
   foreach ($networks as $network) {
     if (! isset($network ['id']) || ! isset($network ['title'])) {
@@ -129,7 +120,7 @@ function eneon_create_taxonomy_terms($networks, $property_name, $vocab_name) {
   }
 }
 
-function eneon_add_theme_references($wrapper, $network) {
+function _eneon_add_theme_references($wrapper, $network) {
   $theme_relations = array(); //$wrapper->{ENEON_NETWORK_THEME_REFERENCE}->value();
 
   $themes = isset($network ['theme']) ? $network ['theme'] : array();
@@ -143,7 +134,7 @@ function eneon_add_theme_references($wrapper, $network) {
   $wrapper->{ENEON_NETWORK_THEME_REFERENCE}->set($theme_relations);
 }
 
-function eneon_add_sba_references($wrapper, $network) {
+function _eneon_add_sba_references($wrapper, $network) {
   $sba_relations =  array(); //$wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
 
   $sbas = isset($network ['SBA']) ? $network ['SBA'] : array();
@@ -187,59 +178,124 @@ function eneon_get_taxonomy_terms_like($vocab, $filters=array('*')) {
   }
 }
 
-function eneon_create_or_load_network($network) {
-  $nid = $network ['id'];
+function _eneon_create_or_load_network($network) {
+ $nid = $network ['id'];
   $title = $network ['title'];
-  $existing_networks = db_select(ENEON_TABLE_NETWORKS, 'n')
-      ->fields('n', array ('id'))
-      ->fields('n', array('nid'))
-      ->execute()
-      // returns an indexed array
-      ->fetchAllAssoc('id');
 
-  $nidsById = array_column($existing_networks, 'nid', 'id');
-  $idsByNid = array_flip($nidsById);
-  return in_array($nid, $nidsById)
-      ? entity_load_single(ENEON_ENTITY_NETWORK, $idsByNid[$nid])
-      : entity_create(ENEON_ENTITY_NETWORK, array (
-          'nid' => $nid,
-          'title' => $title,
-          array('is_new_revision' => FALSE)
-        ));
+  // TODO constant
+  $sql = 'SELECT n.eneon_network_id_value FROM {field_data_eneon_network_id} n WHERE n.eneon_network_id_value=:nid';
+  $result = db_query($sql, array(':nid' => $nid))->fetchCol();
+
+  return $result
+      ? entity_load_single('node', $result)
+      : eneon_create_network($nid, $title);
 }
 
-function eneon_network_query($filter=array()) {
-  $sbas = isset($filter['sbas']) && is_array($filter['sbas']) ? $filter['sbas'] : array();
-  $themes = isset($filter['themes']) && is_array($filter['themes']) ? $filter['themes'] : array();
-  $nids = array();
+function eneon_create_network($network_id, $title) {
+  return entity_create('node', array (
+      'nid' => $network_id,
+      'title' => $title,
+      'type' => ENEON_BUNDLE_NETWORK,
+      'status' => 1, // published?
+      'promote' => 0, // frontpage?
+      'comment' => 1, // comments enabled?
+  ));
+}
 
-  if (eneon_not_empty_array($sbas)) {
-    $result = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
-                  ->fields('r', array('entity_id'))
-                  ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
-                  ->execute()
-                  ->fetchCol();
-    $nids = !empty($nids)
-        ? array_intersect_key($nids, $result)
-        : $result;
+function eneon_create_issue() {
+  return entity_create('node', array (
+      'type' => ENEON_BUNDLE_ISSUE,
+      'status' => 1, // published?
+      'promote' => 1, // frontpage?
+      'comment' => 1, // comments enabled?
+  ));
+}
+
+/**
+ * @param array $filter an assoc filter array containing e.g. 'sbas' or 'themes'
+ * @return A sorted list of networks matching the given filter (or all if $filter was FALSE)
+ */
+function eneon_network_query($filter=FALSE) {
+  $nids = $filter ? $filter: FALSE; // FALSE will load all
+  if ($nids) {
+    $sbas = isset($filter['sbas']) && is_array($filter['sbas']) ? $filter['sbas'] : array();
+    $themes = isset($filter['themes']) && is_array($filter['themes']) ? $filter['themes'] : array();
+
+    if (eneon_not_empty_array($sbas)) {
+      $result = db_select('field_data_' . ENEON_NETWORK_SBA_REFERENCE, 'r')
+          ->fields('r', array('entity_id'))
+          ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
+          ->execute()
+          ->fetchCol();
+      $nids = !empty($nids)
+          ? array_intersect_key($nids, $result)
+          : $result;
+    }
+
+    if (eneon_not_empty_array($themes)) {
+      $result = db_select('field_data_' . ENEON_NETWORK_THEME_REFERENCE, 'r')
+          ->fields('r', array('entity_id'))
+          ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
+          ->execute()
+          ->fetchCol();
+      $nids = !empty($nids)
+          ? array_intersect_key($nids, $result)
+          : $result;
+    }
   }
 
-  if (eneon_not_empty_array($themes)) {
-    $result = db_select('field_data_' . ENEON_NETWORK_THEME_REFERENCE, 'r')
-                  ->fields('r', array('entity_id'))
-                  ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
-                  ->execute()
-                  ->fetchCol();
-    $nids = !empty($nids)
-        ? array_intersect_key($nids, $result)
-        : $result;
-  }
-
-  $networks = eneon_not_empty_array($nids)
-      ? eneon_network_load_multiple($nids)
-      : array();
+  $networks = node_load_multiple($nids);
   asort($networks);
   return $networks;
+}
+/**
+ * @param array $filter an assoc filter array containing e.g. 'sbas' or 'themes'
+ * @return A sorted list of issues matching the given filter (or all if $filter was FALSE)
+ */
+function eneon_issue_query($filter=FALSE) {
+  $nids = $filter ? $filter : FALSE; // FALSE will load all
+
+  if ($nids) {
+    $sbas = isset($filter['sbas']) && is_array($filter['sbas']) ? $filter['sbas'] : array();
+    $themes = isset($filter['themes']) && is_array($filter['themes']) ? $filter['themes'] : array();
+
+    if (eneon_not_empty_array($sbas)) {
+      $result = db_select('field_data_' . ENEON_ISSUE_SELECTED_SBAS, 'r')
+          ->fields('r', array('entity_id'))
+          ->condition('r.' . ENEON_NETWORK_SBA_REFERENCE . '_tid', $sbas, 'IN')
+          ->execute()
+          ->fetchCol();
+      $nids = !empty($nids)
+          ? array_intersect_key($nids, $result)
+          : $result;
+    }
+
+    if (eneon_not_empty_array($themes)) {
+      $result = db_select('field_data_' . ENEON_ISSUE_SELECTED_THEMES, 'r')
+          ->fields('r', array('entity_id'))
+          ->condition('r.' . ENEON_NETWORK_THEME_REFERENCE . '_tid', $themes, 'IN')
+          ->execute()
+          ->fetchCol();
+      $nids = !empty($nids)
+          ? array_intersect_key($nids, $result)
+          : $result;
+    }
+  }
+
+  $issues = _eneon_load_multiple(ENEON_BUNDLE_ISSUE);
+  asort($issues);
+  return $issues;
+}
+
+function _eneon_load_multiple($node_type) {
+  $results = db_select('node', 'n')
+      ->fields('n', array('nid'))
+      ->condition('n.type', $node_type)
+      ->execute()
+      ->fetchCol();
+  $nodes = node_load_multiple($results);
+  sort($nodes);
+  return $nodes;
 }
 
 function eneon_not_empty_array($potential_array) {
