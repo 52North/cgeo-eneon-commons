@@ -69,11 +69,6 @@ function eneon_entity_property_info() {
 
   $info[ENEON_BUNDLE_NETWORK] = array(
       'properties' => array(
-          ENEON_NETWORK_ID => array(
-              'label' => t('Network ID'),
-              'description' => t('The ID of the network.'),
-              'type' => 'integer',
-          ),
           ENEON_NETWORK_DESCRIPTION => array(
               'label' => t('Network description'),
               'description' => t('Description of the network.'),
@@ -91,14 +86,12 @@ function eneon_entity_property_info() {
               'description' => t('URL of the network.'),
               'type' => 'text',
               'setter callback' => 'entity_property_verbatim_set',
-              'schema field' => 'url',
           ),
           ENEON_NETWORK_LOGO_URL => array(
               'label' => t('Network logo'),
               'description' => t('Logo of the network.'),
               'type' => 'text',
               'setter callback' => 'entity_property_verbatim_set',
-              'schema field' => 'logo_url',
           ),
           ENEON_NETWORK_SBA_REFERENCE => array(
               'label' => t('Network SBA references'),

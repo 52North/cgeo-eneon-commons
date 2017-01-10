@@ -105,6 +105,11 @@ function _eneon_network_field_infos() {
           'type' => 'text',
           'translatable' => FALSE,
       ),
+      ENEON_NETWORK_TYPE => array(
+          'field_name' => ENEON_NETWORK_TYPE,
+          'type' => 'text',
+          'translatable' => FALSE,
+      ),
       ENEON_NETWORK_DESCRIPTION => array(
           'field_name' => ENEON_NETWORK_DESCRIPTION,
           'type' => 'text_long',
@@ -137,6 +142,11 @@ function _eneon_network_field_infos() {
       ENEON_NETWORK_ID => array(
           'field_name' => ENEON_NETWORK_ID,
           'label' => t('ENEON Network ID'),
+          'required' => TRUE,
+      ),
+      ENEON_NETWORK_TYPE => array(
+          'field_name' => ENEON_NETWORK_TYPE,
+          'label' => t('ENEON Network Type'),
           'required' => TRUE,
       ),
       ENEON_NETWORK_DESCRIPTION => array(

@@ -86,8 +86,8 @@ function eneon_update_networks() {
       if (isset($network['url'])) {
         $wrapper->{ENEON_NETWORK_URL}->set($network['url']);
       }
-      if (isset($network[ENEON_NETWORK_LOGO_URL])) {
-        $wrapper->{ENEON_NETWORK_LOGO_URL}->set(ENEON_HOST . $network['logo']);
+      if (isset($network['logo'])) {
+        $wrapper->{ENEON_NETWORK_LOGO_URL}->set('http://' . ENEON_HOST . '/graph/' . $network['logo']);
       }
       _eneon_add_theme_references($wrapper, $network, $network_property_infos);
       _eneon_add_sba_references($wrapper, $network);
