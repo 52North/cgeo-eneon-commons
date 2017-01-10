@@ -27,8 +27,10 @@
   * Public License for more details.
   */
 
+define('ENEON_HOST', 'www.eneon.net');
+
 function _eneon_download_network_graph() {
-  $response = drupal_http_request('http://www.eneon.net/graph/networks.json');
+  $response = drupal_http_request('http://' . ENEON_HOST . '/graph/networks.json');
   $data = ! empty($response) && $response->code == 200 ? $response->data : NULL;
   if (empty($data)) {
     drupal_set_message($message = t('"eneon" module: no network graph data downloaded.'), $type = 'warning');
@@ -75,11 +77,18 @@ function eneon_update_networks() {
     $entity = _eneon_create_or_load_network($network);
 
     if ($entity) {
+      // Add additional attributes
       $wrapper = entity_metadata_wrapper('node', $entity, array(
-          'property info' => $network_property_infos['properties'], // hook not called yet
+          'property info' => $network_property_infos['properties'], // when hook was not called yet
       ));
       $wrapper->{ENEON_NETWORK_TYPE}->set($network ['type']);
       $wrapper->{ENEON_NETWORK_DESCRIPTION}->set($network ['description']);
+      if (isset($network['url'])) {
+        $wrapper->{ENEON_NETWORK_URL}->set($network['url']);
+      }
+      if (isset($network[ENEON_NETWORK_LOGO_URL])) {
+        $wrapper->{ENEON_NETWORK_LOGO_URL}->set(ENEON_HOST . $network['logo']);
+      }
       _eneon_add_theme_references($wrapper, $network, $network_property_infos);
       _eneon_add_sba_references($wrapper, $network);
       $wrapper->save();

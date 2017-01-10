@@ -65,7 +65,6 @@ function eneon_view_network_modal($js = NULL, $nid= null) {
   $output = node_view($node, 'full');
   $contents = render($output);
   if ($js) {
-    // Required includes for ctools to work:
     ctools_include('modal');
     ctools_include('ajax');
     return ctools_modal_render($node->title, $contents) ;

@@ -49,34 +49,10 @@ define('ENEON_ISSUE_SELECTED_NETWORKS', 'eneon_selected_networks');
 define('ENEON_NETWORK_ID', 'eneon_network_id');
 define('ENEON_NETWORK_TYPE', 'eneon_network_type');
 define('ENEON_NETWORK_DESCRIPTION', 'eneon_network_description');
+define('ENEON_NETWORK_URL', 'eneon_network_url');
+define('ENEON_NETWORK_LOGO_URL', 'eneon_network_logo_url');
 define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
-
-/**
- * Implements hook_init()
- */
-function eneon_init() {
-// comment in for debug
-//   module_load_include('inc', 'eneon', 'includes/eneon.common');
-//   eneon_update_networks();
-}
-
-/**
- * Implements hook_node_access().
- *
- */
-function eneon_node_access($node, $op, $account) {
-  $grants = array();
-
-  if ( !(isset($node->type) && ($node->type == ENEON_BUNDLE_NETWORK || $node->type == ENEON_BUNDLE_ISSUE))) {
-    return NODE_ACCESS_IGNORE;
-  }
-  if ($op == 'create' || $op == 'delete' || $op == 'update' || $op == 'edit') {
-    return NODE_ACCESS_DENY;
-  }
-
-  return NODE_ACCESS_IGNORE;
-}
 
 /**
  * Implements hook_menu()

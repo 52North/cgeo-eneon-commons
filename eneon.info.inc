@@ -32,7 +32,7 @@
 //  http://wolfgangziegler.net/introducing_entity_metadata
 
 /**
- * Implements hook_entity_property_info().
+ * Implements hook_entity_property_info_alter().
  */
 function eneon_entity_property_info() {
   $info = array();
@@ -48,18 +48,19 @@ function eneon_entity_property_info() {
           ENEON_ISSUE_SELECTED_SBAS => array(
               'label' => t('Issue selected SBAs'),
               'description' => t('Selected SBAs.'),
-              'type' => 'list<' . ENEON_VOCAB_BUNDLE_SBA . '>',
+              'type' => 'list<taxonomy_term>',
               'setter callback' => 'entity_property_verbatim_set',
           ),
           ENEON_ISSUE_SELECTED_THEMES => array(
               'label' => t('Issue selected THEMES'),
               'description' => t('Selected Themes.'),
-              'type' => 'list<' . ENEON_VOCAB_BUNDLE_THEME. '>',
+              'type' => 'list<taxonomy_term>',
               'setter callback' => 'entity_property_verbatim_set',
           ),
           ENEON_ISSUE_SELECTED_NETWORKS => array(
               'label' => t('Issue selected networks'),
               'description' => t('Selected networks related to this issue.'),
+//               'type' => 'entityreference',
               'type' => 'list<' . ENEON_BUNDLE_NETWORK . '>',
               'setter callback' => 'entity_property_verbatim_set',
           ),
@@ -84,6 +85,20 @@ function eneon_entity_property_info() {
               'description' => t('Type of the ENEON network'),
               'type' => 'text',
               'setter callback' => 'entity_property_verbatim_set',
+          ),
+          ENEON_NETWORK_URL => array(
+              'label' => t('Network URL'),
+              'description' => t('URL of the network.'),
+              'type' => 'text',
+              'setter callback' => 'entity_property_verbatim_set',
+              'schema field' => 'url',
+          ),
+          ENEON_NETWORK_LOGO_URL => array(
+              'label' => t('Network logo'),
+              'description' => t('Logo of the network.'),
+              'type' => 'text',
+              'setter callback' => 'entity_property_verbatim_set',
+              'schema field' => 'logo_url',
           ),
           ENEON_NETWORK_SBA_REFERENCE => array(
               'label' => t('Network SBA references'),

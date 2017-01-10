@@ -32,13 +32,25 @@
  */
 function eneon_enable() {
   module_load_include('inc', 'eneon', 'includes/eneon.common');
+  $external_image_cache_whitelist = variable_get('imagecache_external_hosts');
+  if (strpos( $external_image_cache_whitelist, ENEON_HOST) === false) {
+    $external_image_cache_whitelist .= ENEON_HOST;
+    variable_set('imagecache_external_hosts', $external_image_cache_whitelist);
+  }
+//   eneon_install(); // debug: comment in and enable module via UI
   eneon_update_networks();
 }
 /**
  * Implements hook_disable)
  */
 function eneon_disable() {
-  eneon_uninstall();
+  module_load_include('inc', 'eneon', 'includes/eneon.common');
+  $external_image_cache_whitelist = variable_get('imagecache_external_hosts');
+  if (strpos( $external_image_cache_whitelist, ENEON_HOST) !== false) {
+    $external_image_cache_whitelist =  str_replace($external_image_cache_whitelist, ENEON_HOST, '');
+    variable_set('imagecache_external_hosts', $external_image_cache_whitelist);
+  }
+//   eneon_uninstall(); // debug: comment in and enable module via UI
 }
 /**
  * Implements hook_install()
@@ -53,10 +65,10 @@ function eneon_install() {
   _eneon_create_fields(ENEON_BUNDLE_ISSUE, _eneon_issue_field_infos());
   module_invoke('eneon', 'entity_property_info');
 
-//   node_types_rebuild();
-//   $types = node_type_get_types();
-//   node_add_body_field($types[ENEON_BUNDLE_ISSUE]);
-//   node_type_save($types[ENEON_BUNDLE_ISSUE]);
+  node_types_rebuild();
+  $types = node_type_get_types();
+  node_add_body_field($types[ENEON_BUNDLE_ISSUE]);
+  node_type_save($types[ENEON_BUNDLE_ISSUE]);
 
   $permissions = array(
       'create ' . ENEON_BUNDLE_ISSUE .' content',
@@ -98,6 +110,16 @@ function _eneon_network_field_infos() {
           'type' => 'text_long',
           'translatable' => TRUE,
       ),
+      ENEON_NETWORK_URL => array(
+          'field_name' => ENEON_NETWORK_URL,
+          'type' => 'text',
+          'translatable' => FALSE,
+      ),
+      ENEON_NETWORK_LOGO_URL => array(
+          'field_name' => ENEON_NETWORK_LOGO_URL,
+          'type' => 'text',
+          'translatable' => FALSE,
+      ),
       ENEON_NETWORK_SBA_REFERENCE => array(
         'field_name' => ENEON_NETWORK_SBA_REFERENCE,
         'type' => 'taxonomy_term_reference',
@@ -121,6 +143,16 @@ function _eneon_network_field_infos() {
           'field_name' => ENEON_NETWORK_DESCRIPTION,
           'label' => t('Description'),
           'required' => TRUE,
+      ),
+      ENEON_NETWORK_URL => array(
+          'field_name' => ENEON_NETWORK_URL,
+          'label' => t('Network URL'),
+          'required' => FALSE,
+      ),
+      ENEON_NETWORK_LOGO_URL => array(
+          'field_name' => ENEON_NETWORK_LOGO_URL,
+          'label' => t('Network Logo URL'),
+          'required' => FALSE,
       ),
       ENEON_NETWORK_SBA_REFERENCE => array(
           'field_name' => ENEON_NETWORK_SBA_REFERENCE,
