@@ -124,8 +124,16 @@ function eneon_node_view($node, $view_mode, $langcode) {
           '#prefix' => '<div>',
           '#suffix' => '</div>',
           '#markup' => $image_markup,
-          '#weigth' => 0,
+          '#weight' => 0,
       );
+    }
+
+    if (!empty($type)) {
+      $node->content[ENEON_NETWORK_TYPE]['#weight'] = 6;
+    }
+
+    if (!empty($url)) {
+      $node->content[ENEON_NETWORK_URL]['#weight'] = 8;
     }
 
     $node->content[ENEON_NETWORK_SBA_REFERENCE] = array(
