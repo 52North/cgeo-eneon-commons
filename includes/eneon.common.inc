@@ -297,11 +297,22 @@ function eneon_not_empty_array($potential_array) {
       sizeof($potential_array) > 0;
 }
 
-function _eneon_render_tax_items($items, $link_options=array()) {
-//   $tax_items = taxonomy_term_load_multiple($items_ids);
-  $result = '<ul class="taxonomy-items">';
+function _eneon_render_taxonomy_linklist($items, $options=array()) {
+  $classes = isset($options['classes']) ? implode(' ', $options['classes']) : '';
+  $result = !empty($classes) ? '<ul class="' . $classes . '">' : '<ul>';
   foreach ($items as $item) {
+    $link_options = isset($options['link_options']) ? $options['link_options'] : array();
     $result .= '<li>' . l($item->name, '/taxonomy/term/' . $item->tid, $link_options) . '</li>';
+  }
+  $result .= '</ul>';
+  return $result;
+}
+
+function _eneon_render_entityreference_linklist($items, $options=array()) {
+  $classes = isset($options['classes']) ? implode(' ', $options['classes']) : '';
+  $result = isset($classes) ? '<ul class="' . $classes . '">' : '<ul>';
+  foreach ($items as $item) {
+    $result .= '<li>' . l($item->title, '/node/' . $item->nid, $options) . '</li>';
   }
   $result .= '</ul>';
   return $result;

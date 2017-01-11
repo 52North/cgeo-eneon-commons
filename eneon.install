@@ -155,7 +155,7 @@ function _eneon_network_field_infos() {
           'required' => TRUE,
           'display' => array(
               'teaser' => array( 'type' => 'text_default'),
-          )
+          ),
       ),
       ENEON_NETWORK_URL => array(
           'field_name' => ENEON_NETWORK_URL,
@@ -190,6 +190,9 @@ function _eneon_issue_field_infos() {
           'field_name' => ENEON_ISSUE_DESCRIPTION,
           'type' => 'text_long',
           'translatable' => TRUE,
+          'display' => array(
+              'teaser' => array( 'type' => 'text_default'),
+          )
       ),
       ENEON_ISSUE_SELECTED_SBAS => array(
           'field_name' => ENEON_ISSUE_SELECTED_SBAS,
@@ -233,6 +236,9 @@ function _eneon_issue_field_infos() {
           ),
           'translatable' => FALSE,
           'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+          'widget' => array(
+              'type' => 'link_field',
+          ),
       ),
   );
   $infos['instances'] = array(

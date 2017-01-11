@@ -140,32 +140,39 @@ function eneon_node_view($node, $view_mode, $langcode) {
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Related SBAs') . '</label>',
         '#suffix' => '</div>',
-        '#markup' => _eneon_render_tax_items($sbas),
+        '#markup' => _eneon_render_taxonomy_linklist($sbas, array('classes' => array('horizontal-list'))),
         '#weight' => 10,
     );
     $node->content[ENEON_NETWORK_THEME_REFERENCE] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Related Themes') . '</label>',
         '#suffix' => '</div>',
-        '#markup' => _eneon_render_tax_items($themes),
+        '#markup' => _eneon_render_taxonomy_linklist($themes, array('classes' => array('horizontal-list'))),
         '#weight' => 9,
     );
   } elseif ($node->type === ENEON_BUNDLE_ISSUE && $view_mode === 'full') {
     $wrapper = entity_metadata_wrapper('node', $node);
     $sbas = $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
     $themes = $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
+    $networks = $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->value();
 
     $node->content[ENEON_ISSUE_SELECTED_SBAS] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected SBAs') . '</label>',
         '#suffix' => '</div>',
-        '#markup' => _eneon_render_tax_items($sbas),
+        '#markup' => _eneon_render_taxonomy_linklist($sbas, array('classes' => array('horizontal-list'))),
     );
     $node->content[ENEON_ISSUE_SELECTED_THEMES] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected Themes') . '</label>',
         '#suffix' => '</div>',
-        '#markup' => _eneon_render_tax_items($themes),
+        '#markup' => _eneon_render_taxonomy_linklist($themes, array('classes' => array('horizontal-list'))),
+    );
+    $node->content[ENEON_ISSUE_SELECTED_NETWORKS] = array(
+        '#type' => 'markup',
+        '#prefix' => '<div class="field"><label>' . t('Selected Networks') . '</label>',
+        '#suffix' => '</div>',
+        '#markup' => _eneon_render_entityreference_linklist($networks, array('classes' => array('horizontal-list'))),
     );
   }
 }

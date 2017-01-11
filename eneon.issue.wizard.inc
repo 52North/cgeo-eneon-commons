@@ -321,22 +321,25 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       '#weight' => 0,
   );
 
-  $link_options = array(
-      'attributes' => array(
-          'target' => '_blank',
+  $options = array(
+      'classes' => array('horizontal-list'),
+      'link_options' => array(
+        'attributes' => array(
+            'target' => '_blank',
+        ),
       ),
   );
   $form['sbas'] = array(
       '#type' => 'markup',
       '#prefix' => '<div class="form-item form-type-item"><label>' . t('Selected SBAs') . '</label>',
       '#suffix' => '</div>',
-      '#markup' => _eneon_render_tax_items($selected_sbas, $link_options),
+      '#markup' => _eneon_render_taxonomy_linklist($selected_sbas, $options),
   );
   $form['themes'] = array(
       '#type' => 'markup',
       '#prefix' => '<div class="form-item form-type-item"><label>' . t('Selected Themes') . '</label>',
       '#suffix' => '</div>',
-      '#markup' => _eneon_render_tax_items($selected_themes, $link_options),
+      '#markup' => _eneon_render_taxonomy_linklist($selected_themes, $options),
   );
 
   $form['network_suggestion_hint'] = array(

@@ -20,24 +20,17 @@ body {
     max-height: 300px;
 }
 
-#eneon-issue-wizard .taxonomy-items,
-.node-eneon-network .taxonomy-items,
-.node-eneon-issue .taxonomy-items {
+.node .horizontal-list {
     margin: 0 0 .25em 0;
     padding: 0;
 }
 
-#eneon-issue-wizard .taxonomy-items ul,
-.node-eneon-network .taxonomy-items ul,
-.node-eneon-issue .taxonomy-items ul {
+.node .horizontal-list ul {
     white-space: nowrap;
     float: left;
 }
 
-
-#eneon-issue-wizard .taxonomy-items li,
-.node-eneon-network .taxonomy-items li,
-.node-eneon-issue .taxonomy-items li {
+.node .horizontal-list li {
     display: inline;
     padding-right: 1em;
 }
