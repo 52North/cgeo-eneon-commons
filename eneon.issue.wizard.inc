@@ -344,25 +344,36 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       '#markup' => '<div class="suggested-networks-hint">' . t('The following networks could be useful for your issue. You can narrow down the list of networks here:') . '</div>',
   );
 
-  $networks = eneon_network_query(array(
+  $selected_networks = $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->value();
+  $suggested_networks = eneon_network_query(array(
       'sbas' => array_column($selected_sbas, 'tid'),
       'themes' => array_column($selected_themes, 'tid'),
   ));
-  $network_count = sizeof($networks);
+
+  $selected_nids = array_column($selected_networks, 'nid');
+  $suggested_nids = array_column($suggested_networks, 'nid');
+
+  $suggested_selected_nids = array_intersect($selected_nids, $suggested_nids);
+  $unsuggested_selected_nids = array_diff($selected_nids, $suggested_nids);
+
+  $unsuggested_but_selected_networks = array_filter($selected_networks, function($network) use($suggested_nids) {
+    return !in_array($network->nid, $suggested_nids);
+  });
+  // rewrite keys
+  $unsuggested_but_selected_networks = array_combine($unsuggested_selected_nids, array_values($unsuggested_but_selected_networks));
 
   $form['fieldset_eneon_proposed_networks'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Proposed Networks (#@count)', array('@count' => $network_count)),
+      '#title' => t('Proposed Networks (#@count)', array('@count' => sizeof($suggested_networks))),
   );
 
-  if (eneon_not_empty_array($networks)) {
-    $selections = array_column($wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->value(), 'nid');
-    $suggested_networks = _eneon_create_checkboxes_with_modal_links($networks);
+  if (eneon_not_empty_array($suggested_networks)) {
+    $checkboxes = _eneon_create_checkboxes_with_modal_links($suggested_networks);
     $form['fieldset_eneon_proposed_networks']['suggested_networks'] = array(
         '#type' => 'checkboxes',
-        '#options' => $suggested_networks,
-        '#default_value' => $selections,
-        '#prefix' => '<div class="suggested-networks">',
+        '#options' => $checkboxes,
+        '#default_value' => $suggested_selected_nids,
+        '#prefix' => '<div class="network-list">',
         '#suffix' => '</div>',
     );
   } else {
@@ -371,6 +382,24 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
         '#markup' => t('No networks can be suggested based on current selections'),
     );
   }
+
+
+  if (eneon_not_empty_array($unsuggested_but_selected_networks)) {
+    $form['fieldset_eneon_unsuggested_but_selected_networks'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Networks not suggested anymore'),
+    );
+
+    $checkboxes = _eneon_create_checkboxes_with_modal_links($unsuggested_but_selected_networks);
+    $form['fieldset_eneon_unsuggested_but_selected_networks']['unsuggested_but_selected_networks'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $checkboxes,
+        '#default_value' => array_values($unsuggested_selected_nids),
+        '#prefix' => '<div class="network-list">',
+        '#suffix' => '</div>',
+    );
+  }
+
   return $form;
 }
 
@@ -425,11 +454,16 @@ function eneon_issue_wizard_submit($form, &$form_state) {
 
   $entity = $form_state[ENEON_BUNDLE_ISSUE];
   $wrapper = entity_metadata_wrapper('node', $entity);
-  $networks_selection_states = _eneon_get_form_value('suggested_networks', $values_previous_step, array());
-  $selected_networks = array_filter($networks_selection_states, function($item, $k) {
-    return is_string($item);
-  }, ARRAY_FILTER_USE_BOTH);
-  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set(array_values($selected_networks));
+
+  $get_selection_from = function($name) use ($values_previous_step) {
+    $networks_selection_states = _eneon_get_form_value($name, $values_previous_step, array());
+    return array_filter($networks_selection_states, function($item) { return is_string($item); });
+  };
+  $selected_networks = array_merge(
+      $get_selection_from('suggested_networks'),
+      $get_selection_from('unsuggested_but_selected_networks'));
+
+  $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->set(array_values(array_filter($selected_networks)));
 
   $wrapper->author->set($user);
   $wrapper->save();

@@ -15,9 +15,9 @@ body {
     margin-bottom: 1em;
 }
 
-#eneon-issue-wizard .suggested-networks {
+#eneon-issue-wizard .network-list {
     overflow-y: scroll;
-    max-height: 400px;
+    max-height: 300px;
 }
 
 #eneon-issue-wizard .taxonomy-items,
