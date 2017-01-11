@@ -304,8 +304,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->set(_eneon_get_form_value('sbas', $values_previous_step, array()));
   $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->set(_eneon_get_form_value('themes', $values_previous_step, array()));
 
-  $selected_themes = !empty($values_previous_step['themes']) ? $values_previous_step['themes'] : $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
-  $selected_sbas = !empty($values_previous_step['sbas']) ? $values_previous_step['sbas'] : $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
+  $selected_themes = $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
+  $selected_sbas = $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
 
   $form['title'] = array(
       '#title' => t('Title'),
@@ -321,19 +321,23 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
       '#weight' => 0,
   );
 
-  // XXX values are only rendered after saving (ie when editing issue)
+  $link_options = array(
+      'attributes' => array(
+          'target' => '_blank',
+      ),
+  );
   $form['sbas'] = array(
       '#type' => 'markup',
       '#prefix' => '<div class="form-item form-type-item"><label>' . t('Selected SBAs') . '</label>',
       '#suffix' => '</div>',
-      '#markup' => _eneon_render_tax_items($selected_sbas),
-  );//field_view_value('node', $entity, ENEON_ISSUE_SELECTED_SBAS, $selected_sbas);
+      '#markup' => _eneon_render_tax_items($selected_sbas, $link_options),
+  );
   $form['themes'] = array(
       '#type' => 'markup',
       '#prefix' => '<div class="form-item form-type-item"><label>' . t('Selected Themes') . '</label>',
       '#suffix' => '</div>',
-      '#markup' => _eneon_render_tax_items($selected_themes),
-  );//field_view_value('node', $entity, ENEON_ISSUE_SELECTED_THEMES, $selected_themes);
+      '#markup' => _eneon_render_tax_items($selected_themes, $link_options),
+  );
 
   $form['network_suggestion_hint'] = array(
       '#type' => 'markup',
@@ -341,8 +345,8 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   );
 
   $networks = eneon_network_query(array(
-      'sbas' => $selected_sbas,
-      'themes' => $selected_themes,
+      'sbas' => array_column($selected_sbas, 'tid'),
+      'themes' => array_column($selected_themes, 'tid'),
   ));
   $network_count = sizeof($networks);
 
@@ -368,16 +372,6 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
     );
   }
   return $form;
-}
-
-function _eneon_render_tax_items($items_ids) {
-  $tax_items = taxonomy_term_load_multiple($items_ids);
-  $result = '<ul class="taxonomy-items">';
-  foreach ($tax_items as $item) {
-    $result .= '<li>' . l($item->name, '/taxonomy/term/' . $item->tid) . '</li>';
-  }
-  $result .= '</ul>';
-  return $result;
 }
 
 function _eneon_create_checkboxes_with_modal_links($networks) {

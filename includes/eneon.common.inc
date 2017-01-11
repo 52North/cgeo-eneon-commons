@@ -309,3 +309,13 @@ function eneon_not_empty_array($potential_array) {
       is_array($potential_array) &&
       sizeof($potential_array) > 0;
 }
+
+function _eneon_render_tax_items($items, $link_options=array()) {
+//   $tax_items = taxonomy_term_load_multiple($items_ids);
+  $result = '<ul class="taxonomy-items">';
+  foreach ($items as $item) {
+    $result .= '<li>' . l($item->name, '/taxonomy/term/' . $item->tid, $link_options) . '</li>';
+  }
+  $result .= '</ul>';
+  return $result;
+}

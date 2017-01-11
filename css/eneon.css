@@ -20,20 +20,32 @@ body {
     max-height: 400px;
 }
 
-#eneon-issue-wizard .taxonomy-items {
-    margin: .25em .25em;
+#eneon-issue-wizard .taxonomy-items,
+.node-eneon-network .taxonomy-items,
+.node-eneon-issue .taxonomy-items {
+    margin: 0 0 .25em 0;
     padding: 0;
 }
 
-#eneon-issue-wizard .taxonomy-items li {
+#eneon-issue-wizard .taxonomy-items ul,
+.node-eneon-network .taxonomy-items ul,
+.node-eneon-issue .taxonomy-items ul {
+    white-space: nowrap;
+    float: left;
+}
+
+
+#eneon-issue-wizard .taxonomy-items li,
+.node-eneon-network .taxonomy-items li,
+.node-eneon-issue .taxonomy-items li {
     display: inline;
     padding-right: 1em;
 }
 
-.field-name-eneon-network-description {
-    margin-bottom: 1em;
-}
+/* .field-name-eneon-network-description { */
+/*     margin-bottom: 1em; */
+/* } */
 
-.field-name-eneon-issue-description {
-    margin-bottom: 1em;
-}
+/* .field-name-eneon-issue-description { */
+/*     margin-bottom: 1em; */
+/* } */
