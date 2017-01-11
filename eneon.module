@@ -182,7 +182,7 @@ function eneon_node_info() {
           'description' => t('An ENEON Network'),
           'has_title' => TRUE,
           'title_label' => t('Network'),
-          'locked' => TRUE,
+//           'locked' => TRUE,
       )
   );
 }

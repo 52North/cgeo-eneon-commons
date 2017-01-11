@@ -86,6 +86,7 @@ function eneon_update_networks() {
       if (isset($network['url'])) {
         $value = array(
             'url' => $network['url'],
+            'title' => $network['url'],
             'attributes' => array(
                 'target' => LINK_TARGET_NEW_WINDOW,
             ),
