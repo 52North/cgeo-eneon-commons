@@ -84,7 +84,13 @@ function eneon_update_networks() {
       $wrapper->{ENEON_NETWORK_TYPE}->set($network ['type']);
       $wrapper->{ENEON_NETWORK_DESCRIPTION}->set($network ['description']);
       if (isset($network['url'])) {
-        $wrapper->{ENEON_NETWORK_URL}->set($network['url']);
+        $value = array(
+            'url' => $network['url'],
+            'attributes' => array(
+                'target' => LINK_TARGET_NEW_WINDOW,
+            ),
+        );
+        $wrapper->{ENEON_NETWORK_URL}->set($value);
       }
       if (isset($network['logo'])) {
         $wrapper->{ENEON_NETWORK_LOGO_URL}->set('http://' . ENEON_HOST . '/graph/' . $network['logo']);

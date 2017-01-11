@@ -117,7 +117,7 @@ function _eneon_network_field_infos() {
       ),
       ENEON_NETWORK_URL => array(
           'field_name' => ENEON_NETWORK_URL,
-          'type' => 'text',
+          'type' => 'link_field',
           'translatable' => FALSE,
       ),
       ENEON_NETWORK_LOGO_URL => array(
