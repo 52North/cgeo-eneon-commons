@@ -153,6 +153,9 @@ function _eneon_network_field_infos() {
           'field_name' => ENEON_NETWORK_DESCRIPTION,
           'label' => t('Description'),
           'required' => TRUE,
+          'display' => array(
+              'teaser' => array( 'type' => 'text_default'),
+          )
       ),
       ENEON_NETWORK_URL => array(
           'field_name' => ENEON_NETWORK_URL,
