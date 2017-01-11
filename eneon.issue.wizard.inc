@@ -322,7 +322,7 @@ function eneon_issue_wizard_network_suggestions($form, &$form_state) {
   );
 
   $options = array(
-      'classes' => array('horizontal-list'),
+      'classes' => array('horizontal-list', 'no-bullets'),
       'link_options' => array(
         'attributes' => array(
             'target' => '_blank',

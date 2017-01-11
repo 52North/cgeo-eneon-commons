@@ -86,19 +86,27 @@ function eneon_menu() {
 
   $items['networks'] = array(
       'title' => t('Networks'),
-      'page callback' => 'eneon_view_network_list',
-      'access callback' => TRUE,
-      'file' => 'eneon.pages.inc',
+      'access arguments' => array('view content'),
   );
 
   $items[$autoload_network_modal_wildcard] = array(
       'title' => t('Network Details'),
       'page arguments' => array(1, 2),
       'page callback' => 'eneon_view_network_modal',
-      'access callback' => TRUE,
+      'access arguments' => array('view content'),
       'file' => 'eneon.pages.inc',
   );
   return $items;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function eneon_views_api() {
+  return array(
+      'api' => 3.0,
+      'path' => drupal_get_path('module', 'eneon') . '/views',
+  );
 }
 
 function eneon_node_view($node, $view_mode, $langcode) {
@@ -172,7 +180,7 @@ function eneon_node_view($node, $view_mode, $langcode) {
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected Networks') . '</label>',
         '#suffix' => '</div>',
-        '#markup' => _eneon_render_entityreference_linklist($networks, array('classes' => array('horizontal-list'))),
+        '#markup' => _eneon_render_entityreference_linklist($networks, array('classes' => array('no-bullets'))),
     );
   }
 }

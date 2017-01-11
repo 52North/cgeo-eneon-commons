@@ -20,18 +20,29 @@ body {
     max-height: 300px;
 }
 
-.node .horizontal-list {
+#eneon-issue-wizard .horizontal-list,
+.node .horizontal-list,
+.node .no-bullets {
     margin: 0 0 .25em 0;
     padding: 0;
 }
 
+#eneon-issue-wizard .horizontal-list ul,
 .node .horizontal-list ul {
-    white-space: nowrap;
     float: left;
 }
 
+#eneon-issue-wizard .horizontal-list li,
 .node .horizontal-list li {
     display: inline;
+/*     white-space: nowrap; */
     padding-right: 1em;
+}
+
+#eneon-issue-wizard .horizontal-list li,
+#eneon-issue-wizard .no-bullets li,
+.node .horizontal-list li,
+.node .no-bullets li {
+    list-style-type: none;
 }
 

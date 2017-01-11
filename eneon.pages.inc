@@ -29,15 +29,6 @@
 
 require_once 'includes/eneon.common.inc';
 
-function eneon_view_network_list() {
-  $output = array();
-  $entities = eneon_network_query();
-  foreach ($entities as $node) {
-    $output[] = node_view($node, 'teaser');
-  }
-  return drupal_render($output);
-}
-
 function eneon_view_issue_list() {
   $output = array();
   $entities = eneon_issue_query();
