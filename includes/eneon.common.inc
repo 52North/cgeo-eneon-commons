@@ -222,8 +222,8 @@ function eneon_create_issue() {
  * @return A sorted list of networks matching the given filter (or all if $filter was FALSE)
  */
 function eneon_network_query($filter=FALSE) {
-  $nids = $filter ? $filter: FALSE; // FALSE will load all
-  if ($nids) {
+  $nids = $filter ? array(): FALSE; // FALSE will load all
+  if (is_array($nids)) {
     $sbas = isset($filter['sbas']) && is_array($filter['sbas']) ? $filter['sbas'] : array();
     $themes = isset($filter['themes']) && is_array($filter['themes']) ? $filter['themes'] : array();
 
@@ -250,8 +250,7 @@ function eneon_network_query($filter=FALSE) {
     }
   }
 
-  $networks = _eneon_load_multiple(ENEON_BUNDLE_NETWORK);
-  asort($networks);
+  $networks = node_load_multiple($nids, array('type' => ENEON_BUNDLE_NETWORK));
   return $networks;
 }
 /**
@@ -259,9 +258,8 @@ function eneon_network_query($filter=FALSE) {
  * @return A sorted list of issues matching the given filter (or all if $filter was FALSE)
  */
 function eneon_issue_query($filter=FALSE) {
-  $nids = $filter ? $filter : FALSE; // FALSE will load all
-
-  if ($nids) {
+  $nids = $filter ? array() : FALSE; // FALSE will load all
+  if (is_array($nids)) {
     $sbas = isset($filter['sbas']) && is_array($filter['sbas']) ? $filter['sbas'] : array();
     $themes = isset($filter['themes']) && is_array($filter['themes']) ? $filter['themes'] : array();
 
@@ -288,20 +286,8 @@ function eneon_issue_query($filter=FALSE) {
     }
   }
 
-  $issues = _eneon_load_multiple(ENEON_BUNDLE_ISSUE);
-  asort($issues);
+  $issues = node_load_multiple($nids, array('type' => ENEON_BUNDLE_ISSUE));
   return $issues;
-}
-
-function _eneon_load_multiple($node_type) {
-  $results = db_select('node', 'n')
-      ->fields('n', array('nid'))
-      ->condition('n.type', $node_type)
-      ->execute()
-      ->fetchCol();
-  $nodes = node_load_multiple($results);
-  sort($nodes);
-  return $nodes;
 }
 
 function eneon_not_empty_array($potential_array) {
