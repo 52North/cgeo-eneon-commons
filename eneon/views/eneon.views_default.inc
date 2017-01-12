@@ -66,9 +66,10 @@ function _eneon_create_issues_view() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
   $handler->display->display_options['path'] = 'issues';
-  $handler->display->display_options['menu']['type'] = 'main';
+  $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Issues';
   $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'main-menu';
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 
@@ -129,7 +130,6 @@ function _eneon_create_networks_view() {
   $handler->display->display_options['path'] = 'networks';
   $handler->display->display_options['menu']['type'] = 'main';
   $handler->display->display_options['menu']['title'] = 'Networks';
-
 
   return $view;
 }
