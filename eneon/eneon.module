@@ -54,6 +54,11 @@ define('ENEON_NETWORK_LOGO_URL', 'eneon_network_logo_url');
 define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
 
+function eneon_menu_alter(&$items) {
+  $tmp = array();
+//   $items['user/logout']['name'] = 'main-menu';
+}
+
 /**
  * Implements hook_menu()
  */
@@ -63,10 +68,10 @@ function eneon_menu() {
 
   $items['issues'] = array(
       'title' => t('Issues'),
-      'access callback' => TRUE,
+      'access arguments' => array('view content'),
   );
   $items['issues/add'] = array(
-      'title' => t('Add issue'),
+      'title' => t('Add new Issue'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('eneon_issue_wizard'),
       'access arguments' => array('create ' . ENEON_BUNDLE_ISSUE . ' content'),
@@ -91,7 +96,7 @@ function eneon_menu() {
       'title' => t('Network Details'),
       'page arguments' => array(1, 2),
       'page callback' => 'eneon_view_network_modal',
-      'access arguments' => array('view content'),
+      'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
   return $items;
@@ -107,9 +112,9 @@ function eneon_views_api() {
   );
 }
 
-function eneon_node_view($node, $view_mode, $langcode) {
-  $tmp = array();
-  if ($node->type === ENEON_BUNDLE_NETWORK && $view_mode === 'full') {
+function eneon_node_view_alter(&$build) {
+  $node = $build['#node'];
+  if ($build['#bundle'] === ENEON_BUNDLE_NETWORK && $build['#view_mode'] === 'full') {
     $wrapper = entity_metadata_wrapper('node', $node);
     $logo_url = $wrapper->{ENEON_NETWORK_LOGO_URL}->value();
     $sbas = $wrapper->{ENEON_NETWORK_SBA_REFERENCE}->value();
@@ -125,7 +130,7 @@ function eneon_node_view($node, $view_mode, $langcode) {
           'title' => $wrapper->title->value(),
           'alt' => $title,
       ));
-      $node->content[ENEON_NETWORK_LOGO_URL] = array(
+      $build[ENEON_NETWORK_LOGO_URL] = array(
           '#type' => 'markup',
           '#prefix' => '<div>',
           '#suffix' => '</div>',
@@ -135,46 +140,46 @@ function eneon_node_view($node, $view_mode, $langcode) {
     }
 
     if (!empty($type)) {
-      $node->content[ENEON_NETWORK_TYPE]['#weight'] = 6;
+      $build[ENEON_NETWORK_TYPE]['#weight'] = 6;
     }
 
     if (!empty($url)) {
-      $node->content[ENEON_NETWORK_URL]['#weight'] = 8;
+      $build[ENEON_NETWORK_URL]['#weight'] = 8;
     }
 
-    $node->content[ENEON_NETWORK_SBA_REFERENCE] = array(
+    $build[ENEON_NETWORK_SBA_REFERENCE] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Related SBAs') . '</label>',
         '#suffix' => '</div>',
         '#markup' => _eneon_render_taxonomy_linklist($sbas, array('classes' => array('horizontal-list'))),
         '#weight' => 10,
     );
-    $node->content[ENEON_NETWORK_THEME_REFERENCE] = array(
+    $build[ENEON_NETWORK_THEME_REFERENCE] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Related Themes') . '</label>',
         '#suffix' => '</div>',
         '#markup' => _eneon_render_taxonomy_linklist($themes, array('classes' => array('horizontal-list'))),
         '#weight' => 9,
     );
-  } elseif ($node->type === ENEON_BUNDLE_ISSUE && $view_mode === 'full') {
+  } elseif ($build['#bundle'] === ENEON_BUNDLE_ISSUE && $build['#view_mode'] === 'full') {
     $wrapper = entity_metadata_wrapper('node', $node);
     $sbas = $wrapper->{ENEON_ISSUE_SELECTED_SBAS}->value();
     $themes = $wrapper->{ENEON_ISSUE_SELECTED_THEMES}->value();
     $networks = $wrapper->{ENEON_ISSUE_SELECTED_NETWORKS}->value();
 
-    $node->content[ENEON_ISSUE_SELECTED_SBAS] = array(
+    $build[ENEON_ISSUE_SELECTED_SBAS] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected SBAs') . '</label>',
         '#suffix' => '</div>',
         '#markup' => _eneon_render_taxonomy_linklist($sbas, array('classes' => array('horizontal-list'))),
     );
-    $node->content[ENEON_ISSUE_SELECTED_THEMES] = array(
+    $build[ENEON_ISSUE_SELECTED_THEMES] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected Themes') . '</label>',
         '#suffix' => '</div>',
         '#markup' => _eneon_render_taxonomy_linklist($themes, array('classes' => array('horizontal-list'))),
     );
-    $node->content[ENEON_ISSUE_SELECTED_NETWORKS] = array(
+    $build[ENEON_ISSUE_SELECTED_NETWORKS] = array(
         '#type' => 'markup',
         '#prefix' => '<div class="field"><label>' . t('Selected Networks') . '</label>',
         '#suffix' => '</div>',
@@ -210,13 +215,12 @@ function eneon_node_info() {
 * Implements hook_cron()
 */
 function eneon_cron() {
-  $interval = variable_get('eneon_interval', 60 * 60 * 24 * 7); // once a week
+  $interval = variable_get('eneon_cron_interval', 60 * 60 * 24 * 7); // once a week
   // We usually don't want to act every time cron runs (which could be every
   // minute) so keep a time for the next run in a variable.
-  if (time() >= variable_get('eneon_next_execution', 0)) {
+  if (time() >= variable_get('eneon_cron_next_execution', 0)) {
     eneon_update_networks();
-    watchdog('cron_example', 'cron_example ran');
-    variable_set('eneon_next_execution', time() + $interval);
+    variable_set('eneon_cron_next_execution', time() + $interval);
   }
 }
 

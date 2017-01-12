@@ -1,0 +1,35 @@
+name = 52North Theme for ENEON Portal
+description = 52North Theme for ConnectinGEO project based on Skeleton.
+version = "7.x-1.0"
+core = "7.x"
+
+base theme = skeletontheme
+
+settings[toggle_name]= FALSE
+settings[toggle_slogan]= FALSE
+
+stylesheets[all][] = css/eneon_style.css
+
+regions[header_top_left] = Header top left
+regions[header_top_right] = Header top right
+
+regions[header] = Header
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+
+regions[header_right] = Header right
+regions[highlighted] = Highlighted
+
+regions[content] = Content
+regions[sidebar_first] = Sidebar first
+regions[sidebar_second] = Sidebar second
+
+regions[featured_left] = Featured left
+regions[featured_right] = Featured right
+
+regions[footer_first] = Footer first
+regions[footer_second] = Footer second
+regions[footer_third] = Footer third
+regions[footer] = Footer
+

@@ -4,21 +4,25 @@ services:
     eneon_db:
         image: mysql:5.5.53
         #volumes:
-        #- "../../eneon-data:/var/lib/mysql"
+        #- "./eneon-data:/var/lib/mysql"
         restart: always
         environment:
             MYSQL_DATABASE: eneon_db
             MYSQL_ROOT_PASSWORD: mysql
-        #ports:
-            #- 3306:3306
     
     eneon_drupal-with-xdebug:
         depends_on:
             - eneon_db
         build: . 
         volumes:
-            # ./sites/all/modules
-            - ".:/var/www/html/sites/all/modules/eneon"
+            # Uncomment if you want your local drupal instance
+            # mapped into the container
+            #- "./drupal:/var/www/html/"
+            # The following volumes map the actual ENEON modules
+            # into the container
+            - "./eneon:/var/www/html/sites/all/modules/eneon"
+            - "./eneon_theme:/var/www/html/sites/all/themes/eneon_theme"
+            # Essential setup instructions when container starts
             - "./config/launch.sh:/usr/local/bin/startup"
         links:
             - eneon_db
