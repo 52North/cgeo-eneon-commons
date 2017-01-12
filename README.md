@@ -1,12 +1,19 @@
 # ENEON commons Web Portal
 
+## TOC
+* [Overview](#overview)
+* [Installation](#installation)
+* [Development](#development)
+
+## <a name="overview"></a> Overview
+
 ENEON commons aims to be a Web portal for facilitating discovery, access, re-use and creation of knowledge about observations, networks, and related activities (e.g. projects). The portal has been developed to cover the requirements for handling knowledge about in-situ earth observation networks. This prototype offers functionality for interactive discussion, information exchange and querying information about data delivered by different observation networks.
 
 ![ENEON commons Portal](images/eneon-commons_shot.png)
 
 [ENEON](http://www.eneon.net/) is an activity initiated by [the European ConnectinGEO project](http://www.connectingeo.net/) to coordinate in-situ Earth observation networks with the aim to harmonise the access to observations, improve discoverability, and identify/close gaps in European earth observation data resources.
 
-## Installation
+## <a name="installation"></a> Installation
 
 ### <tl;dr>
 1. Create: `docker-compose up` and perform Drupal Installation
@@ -40,7 +47,7 @@ your site http://localhost and everything should be setup.
 - setting the host whitelist for the external image cache: `admin/config/media/imagecache_external` (default is `www.eneon.net`)
 
 
-## Development
+## <a name="development"></a> Development
 ### Debugging
 Setup configures a ready-to-use [xDebug](https://xdebug.org/) environment. However, you'll need a local copy of Drupal project containing the source wherein to debug. Ideally place it under `drupal` dir under the root directory (it is in `.gitignore` by default).
 
