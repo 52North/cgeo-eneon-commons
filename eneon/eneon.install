@@ -190,7 +190,7 @@ function _eneon_issue_field_infos() {
           'translatable' => TRUE,
           'display' => array(
               'teaser' => array( 'type' => 'text_default'),
-          )
+          ),
       ),
       ENEON_ISSUE_SELECTED_SBAS => array(
           'field_name' => ENEON_ISSUE_SELECTED_SBAS,
@@ -244,21 +244,33 @@ function _eneon_issue_field_infos() {
           'field_name' => ENEON_ISSUE_DESCRIPTION,
           'label' => t('Description'),
           'required' => TRUE,
+          'display' => array(
+              'teaser' => array( 'type' => 'text_default'),
+          ),
       ),
       ENEON_ISSUE_SELECTED_SBAS => array(
           'field_name' => ENEON_ISSUE_SELECTED_SBAS,
           'label' => t('Selected SBAs'),
           'required' => FALSE,
+          'display' => array(
+              'teaser' => array( 'type' => 'hidden'),
+          ),
       ),
       ENEON_ISSUE_SELECTED_THEMES => array(
           'field_name' => ENEON_ISSUE_SELECTED_THEMES,
           'label' => t('Selected Themes'),
           'required' => FALSE,
+          'display' => array(
+              'teaser' => array( 'type' => 'hidden'),
+          ),
       ),
       ENEON_ISSUE_SELECTED_NETWORKS => array(
           'field_name' => ENEON_ISSUE_SELECTED_NETWORKS,
           'label' => t('Selected Networks'),
           'required' => FALSE,
+          'display' => array(
+              'teaser' => array( 'type' => 'hidden'),
+          ),
       ),
   );
 
@@ -287,6 +299,9 @@ function eneon_uninstall() {
 
   _eneon_delete_node_content(ENEON_BUNDLE_NETWORK, _eneon_network_field_infos());
   _eneon_delete_node_content(ENEON_BUNDLE_ISSUE, _eneon_issue_field_infos());
+
+  variable_set('eneon_cron_next_execution', NULL);
+  variable_set('eneon_cron_interval', NULL);
 }
 
 function _eneon_delete_vocabulary($vocab) {
