@@ -50,7 +50,7 @@ Assuming you created a project from your local Drupal folder under the name `ene
 
 * connect to the running Drupal container (Port 9000)
 
-![Debugger Connection Settings](mages/eclipse-debug-config_2.png)
+![Debugger Connection Settings](images/eclipse-debug-config_2.png)
 
 *  set the project root
 
