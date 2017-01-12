@@ -56,10 +56,13 @@ else
 	link \
 	" 
   
-  drush dl $modules
-  drush -y en $modules eneon
+  drush dl "$modules skeletontheme"
+  drush -y en $modules
+  # enable own modules after dependencies are active 
+  drush -y en eneon skeletontheme
   drush -y dis overlay
   drush vset theme_debug 1
+  drush vset theme_default skeletontheme
   drush cc all
   drush cron
   touch /var/www/html/sites/default/files/eneon_networks.json

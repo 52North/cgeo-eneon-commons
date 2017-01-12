@@ -1,0 +1,42 @@
+body,
+#footer,
+#breadcrumb {
+    background-color: #f4f4f4;
+}
+
+#navigation ul li a.active, #navigation ul.sf-menu li a.active {
+  background-color: #ddd;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.15);
+          box-shadow: inset 0 3px 7px rgba(0,0,0,.15);
+}
+#navigation ul ul li a:hover, #navigation ul.sf-menu ul li a:hover, #navigation ul.sf-menu ul li.sfHover > a {
+    background-color: #ddd;
+}
+
+/*css drop down menu arrows*/
+#navigation li.expanded > a, #navigation li.menuparent > a  {
+background: transparent url('../images/light/arrow_bullet_down.png') no-repeat 90% 50%; }
+
+#navigation li li.expanded > a {
+background: #f0f0f0 url('../images/light/arrow_bullet_down.png') no-repeat 90% 50%; }
+
+#navigation li li.expanded:hover > a { background-color:#ffffff; }
+
+#navigation li.expanded:hover > a, #menu li.expanded:active > a,
+#navigation li.menuparent:hover > a, #menu li.menuparent:active > a {    
+background: #f0f0f0 url('../images/dark/arrow_bullet_down.png') no-repeat 90% 50%; }  
+  
+
+a:link, a:visited, #navigation ul li a, #navigation ul.sf-menu li a {
+    color: #777;
+}
+
+#navigation ul li.expanded a, #navigation ul.sf-menu li.menuparent a {
+    border: 1px solid #e9e9e9;
+}
+
+#breadcrumb {
+    border: none; 
+    border-bottom: 1px solid #e9e9e9;
+}
