@@ -63,9 +63,7 @@ function eneon_menu() {
 
   $items['issues'] = array(
       'title' => t('Issues'),
-      'page callback' => 'eneon_view_issue_list',
       'access callback' => TRUE,
-      'file' => 'eneon.pages.inc',
   );
   $items['issues/add'] = array(
       'title' => t('Add issue'),
