@@ -46,7 +46,7 @@ Assuming you created a project from your local Drupal folder under the name `ene
 
 * add a new debug configuration
 
-<img alt="General Debug Settings" src="images/eclipse-debug-config_1.png">
+![General Debug Settings][images/eclipse-debug-config_1.png]
 
 * connect to the running Drupal container (Port 9000)
 
