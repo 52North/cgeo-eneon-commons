@@ -219,7 +219,7 @@ function eneon_create_issue() {
 }
 
 /**
- * @param array $filter an assoc filter array containing e.g. 'sbas' or 'themes'
+ * @param array $filter an assoc filter array containing ids of 'sbas' or 'themes'
  * @return A sorted list of networks matching the given filter (or all if $filter was FALSE)
  */
 function eneon_network_query($filter=FALSE) {
@@ -235,7 +235,7 @@ function eneon_network_query($filter=FALSE) {
           ->execute()
           ->fetchCol();
       $nids = !empty($nids)
-          ? array_intersect_key($nids, $result)
+          ? array_intersect($nids, $result)
           : $result;
     }
 
@@ -246,7 +246,7 @@ function eneon_network_query($filter=FALSE) {
           ->execute()
           ->fetchCol();
       $nids = !empty($nids)
-          ? array_intersect_key($nids, $result)
+          ? array_intersect($nids, $result)
           : $result;
     }
   }
@@ -255,7 +255,7 @@ function eneon_network_query($filter=FALSE) {
   return $networks;
 }
 /**
- * @param array $filter an assoc filter array containing e.g. 'sbas' or 'themes'
+ * @param array $filter an assoc filter array containing ids of 'sbas' or 'themes'
  * @return A sorted list of issues matching the given filter (or all if $filter was FALSE)
  */
 function eneon_issue_query($filter=FALSE) {
@@ -271,7 +271,7 @@ function eneon_issue_query($filter=FALSE) {
           ->execute()
           ->fetchCol();
       $nids = !empty($nids)
-          ? array_intersect_key($nids, $result)
+          ? array_intersect($nids, $result)
           : $result;
     }
 
@@ -282,7 +282,7 @@ function eneon_issue_query($filter=FALSE) {
           ->execute()
           ->fetchCol();
       $nids = !empty($nids)
-          ? array_intersect_key($nids, $result)
+          ? array_intersect($nids, $result)
           : $result;
     }
   }
