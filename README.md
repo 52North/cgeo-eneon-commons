@@ -1,10 +1,6 @@
-# ENEON commons Web Portal
+[TOC]
 
-## TOC
-* [Overview](#overview)
-* [Installation](#installation)
-* [Development](#development)
-*
+# ENEON commons Web Portal
 
 ## Overview
 
@@ -48,7 +44,7 @@ your site http://localhost and everything should be setup.
 - setting the host whitelist for the external image cache: `admin/config/media/imagecache_external` (default is `www.eneon.net`)
 
 
-## <a name="development"></a> Development
+## Development
 ### Debugging
 Setup configures a ready-to-use [xDebug](https://xdebug.org/) environment. However, you'll need a local copy of Drupal project containing the source wherein to debug. Ideally place it under `drupal` dir under the root directory (it is in `.gitignore` by default).
 
