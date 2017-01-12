@@ -54,6 +54,11 @@ define('ENEON_NETWORK_LOGO_URL', 'eneon_network_logo_url');
 define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
 
+function eneon_menu_alter(&$items) {
+  $tmp = array();
+  $items['user/logout']['type'] = 'main';
+}
+
 /**
  * Implements hook_menu()
  */
@@ -66,7 +71,7 @@ function eneon_menu() {
       'access callback' => TRUE,
   );
   $items['issues/add'] = array(
-      'title' => t('Add issue'),
+      'title' => t('Add new Issue'),
       'page callback' => 'drupal_get_form',
       'page arguments' => array('eneon_issue_wizard'),
       'access arguments' => array('create ' . ENEON_BUNDLE_ISSUE . ' content'),
@@ -91,7 +96,7 @@ function eneon_menu() {
       'title' => t('Network Details'),
       'page arguments' => array(1, 2),
       'page callback' => 'eneon_view_network_modal',
-      'access arguments' => array('view content'),
+      'access callback' => TRUE,
       'file' => 'eneon.pages.inc',
   );
   return $items;
@@ -210,13 +215,12 @@ function eneon_node_info() {
 * Implements hook_cron()
 */
 function eneon_cron() {
-  $interval = variable_get('eneon_interval', 60 * 60 * 24 * 7); // once a week
+  $interval = variable_get('eneon_cron_interval', 60 * 60 * 24 * 7); // once a week
   // We usually don't want to act every time cron runs (which could be every
   // minute) so keep a time for the next run in a variable.
-  if (time() >= variable_get('eneon_next_execution', 0)) {
+  if (time() >= variable_get('eneon_cron_next_execution', 0)) {
     eneon_update_networks();
-    watchdog('cron_example', 'cron_example ran');
-    variable_set('eneon_next_execution', time() + $interval);
+    variable_set('eneon_cron_next_execution', time() + $interval);
   }
 }
 

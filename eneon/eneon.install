@@ -38,7 +38,7 @@ function eneon_enable() {
     variable_set('imagecache_external_hosts', $external_image_cache_whitelist);
   }
 //   eneon_install(); // debug: comment in and enable module via UI
-  eneon_update_networks();
+  eneon_cron();
 }
 /**
  * Implements hook_disable)
@@ -75,9 +75,7 @@ function eneon_install() {
       'edit own ' . ENEON_BUNDLE_ISSUE .' content',
   );
 
-//   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('permission name')); // Anonymous users
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, $permissions); // Authentificated users
-
 }
 
 function _eneon_create_vocabularies() {
