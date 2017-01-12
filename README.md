@@ -45,6 +45,15 @@ your site http://localhost and everything should be setup.
 
 
 ## Development
+### Useful drush commands
+- `drush dre <module> -y`: re-installs module `module` with re-inserting schema and fields
+- `drush dis <module> -y`: enables module `module`
+- `drush en <module> -y`: enables module `module`
+- `drush pm-list <module>`: lists all available modules (pipe into `grep <search>` to filter based on `search`)
+- `drush sql-query "<sql>"`: queries the database (e.g. `show tables;` would return all tables available).
+- `drush vset theme_default`: sets the default theme (has to be enabled before)
+- `drush dl <name of theme or module>`: downloads a theme/module
+
 ### Debugging
 Setup configures a ready-to-use [xDebug](https://xdebug.org/) environment. However, you'll need a local copy of Drupal project containing the source wherein to debug. Ideally place it under `drupal` dir under the root directory (it is in `.gitignore` by default).
 
