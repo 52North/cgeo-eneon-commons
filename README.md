@@ -36,3 +36,26 @@ your site http://localhost and everything should be setup.
 
 ## Configuration Settings
 - setting the host whitelist for the external image cache: `admin/config/media/imagecache_external` (default is `www.eneon.net`)
+
+
+## Development
+### Debugging
+Setup configures a ready-to-use [xDebug](https://xdebug.org/) environment. However, you'll need a local copy of Drupal project containing the source wherein to debug. Ideally place it under `drupal` dir under the root directory (it is in `.gitignore` by default).
+
+Assuming you created a project from your local Drupal folder under the name `eneon_drupal`, then to debug,
+
+* add a new debug configuration
+
+<img alt="General Debug Settings" src="images/eclipse-debug-config_1.png">
+
+* connect to the running Drupal container (Port 9000)
+
+<img alt="Debugger Connection Settings" src="images/eclipse-debug-config_2.png">
+
+*  set the project root
+
+<img alt="Debugger Connection Settings" src="images/eclipse-debug-config_3.png">
+
+* alter the web application mapping
+
+<img alt="Alter Web Application Mapping" src="images/eclipse-debug-config_4.png">
