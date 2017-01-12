@@ -194,7 +194,6 @@ function eneon_node_info() {
           'description' => t('An ENEON Issue'),
           'has_title' => TRUE,
           'title_label' => t('Issue'),
-//           'locked' => TRUE,
       ),
 
       ENEON_BUNDLE_NETWORK => array (
@@ -203,17 +202,22 @@ function eneon_node_info() {
           'description' => t('An ENEON Network'),
           'has_title' => TRUE,
           'title_label' => t('Network'),
-//           'locked' => TRUE,
       )
   );
 }
 
-///**
-// * Implements hook_cron()
-// */
-// function eneon_cron() {
-// // regularly download and update graph
-// eneon_update_networks();
-// }
+/**
+* Implements hook_cron()
+*/
+function eneon_cron() {
+  $interval = variable_get('eneon_interval', 60 * 60 * 24 * 7); // once a week
+  // We usually don't want to act every time cron runs (which could be every
+  // minute) so keep a time for the next run in a variable.
+  if (time() >= variable_get('eneon_next_execution', 0)) {
+    eneon_update_networks();
+    watchdog('cron_example', 'cron_example ran');
+    variable_set('eneon_next_execution', time() + $interval);
+  }
+}
 
 
