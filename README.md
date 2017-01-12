@@ -4,8 +4,9 @@
 * [Overview](#overview)
 * [Installation](#installation)
 * [Development](#development)
+*
 
-## <a name="overview"></a> Overview
+## Overview
 
 ENEON commons aims to be a Web portal for facilitating discovery, access, re-use and creation of knowledge about observations, networks, and related activities (e.g. projects). The portal has been developed to cover the requirements for handling knowledge about in-situ earth observation networks. This prototype offers functionality for interactive discussion, information exchange and querying information about data delivered by different observation networks.
 
@@ -13,7 +14,7 @@ ENEON commons aims to be a Web portal for facilitating discovery, access, re-use
 
 [ENEON](http://www.eneon.net/) is an activity initiated by [the European ConnectinGEO project](http://www.connectingeo.net/) to coordinate in-situ Earth observation networks with the aim to harmonise the access to observations, improve discoverability, and identify/close gaps in European earth observation data resources.
 
-## <a name="installation"></a> Installation
+## Installation
 
 ### <tl;dr>
 1. Create: `docker-compose up` and perform Drupal Installation
