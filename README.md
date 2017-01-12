@@ -6,7 +6,7 @@ ENEON commons aims to be a Web portal for facilitating discovery, access, re-use
 
 ## Installation
 
-### &lt;tl;dr&gt;
+### <tl;dr>
 1. Create: `docker-compose up` and perform Drupal Installation
 2. Restart: `docker-compose restart` and let Drupal configure portal
 
