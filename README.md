@@ -10,6 +10,9 @@ ENEON commons aims to be a Web portal for facilitating discovery, access, re-use
 
 [ENEON](http://www.eneon.net/) is an activity initiated by [the European ConnectinGEO project](http://www.connectingeo.net/) to coordinate in-situ Earth observation networks with the aim to harmonise the access to observations, improve discoverability, and identify/close gaps in European earth observation data resources.
 
+## License
+Licenced under [GNU Generatl Public License, Version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
+
 ## Installation
 
 ### <tl;dr>
