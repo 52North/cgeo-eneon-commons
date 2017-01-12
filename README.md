@@ -46,16 +46,16 @@ Assuming you created a project from your local Drupal folder under the name `ene
 
 * add a new debug configuration
 
-![General Debug Settings][images/eclipse-debug-config_1.png]
+![General Debug Settings](images/eclipse-debug-config_1.png)
 
 * connect to the running Drupal container (Port 9000)
 
-<img alt="Debugger Connection Settings" src="images/eclipse-debug-config_2.png">
+![Debugger Connection Settings](mages/eclipse-debug-config_2.png)
 
 *  set the project root
 
-<img alt="Debugger Connection Settings" src="images/eclipse-debug-config_3.png">
+![Debugger Connection Settings](images/eclipse-debug-config_3.png)
 
 * alter the web application mapping
 
-<img alt="Alter Web Application Mapping" src="images/eclipse-debug-config_4.png">
+![Alter Web Application Mapping](images/eclipse-debug-config_4.png)
