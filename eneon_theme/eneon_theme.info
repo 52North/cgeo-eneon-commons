@@ -13,12 +13,8 @@ stylesheets[all][] = css/eneon_style.css
 regions[header_top_left] = Header top left
 regions[header_top_right] = Header top right
 
-regions[header] = Header
-regions[help] = Help
-regions[page_top] = Page top
-regions[page_bottom] = Page bottom
-
 regions[header_right] = Header right
+regions[header] = Header
 regions[highlighted] = Highlighted
 
 regions[content] = Content
@@ -33,3 +29,10 @@ regions[footer_second] = Footer second
 regions[footer_third] = Footer third
 regions[footer] = Footer
 
+regions[help] = Help
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+
+settings[responsive_menu_state]= 1
+settings[responsive_menu_switchwidth]='760'
+settings[responsive_menu_topoptiontext]= 'Select a page'
