@@ -54,11 +54,6 @@ define('ENEON_NETWORK_LOGO_URL', 'eneon_network_logo_url');
 define('ENEON_NETWORK_SBA_REFERENCE', 'eneon_network_sba_ref');
 define('ENEON_NETWORK_THEME_REFERENCE', 'eneon_network_theme_ref');
 
-function eneon_menu_alter(&$items) {
-  $tmp = array();
-//   $items['user/logout']['name'] = 'main-menu';
-}
-
 /**
  * Implements hook_menu()
  */
@@ -66,10 +61,14 @@ function eneon_menu() {
   // https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7.x#sub_autoload_wildcards
   $autoload_network_modal_wildcard = 'eneon/%ctools_js/%';
 
-  $items['issues'] = array(
-      'title' => t('Issues'),
-      'access arguments' => array('view content'),
-  );
+//   $items['issues'] = array(
+//       'title' => t('Issues'),
+//       'access arguments' => array('view content'),
+//   );
+  /*
+   * issues and networks links are created by default view
+   */
+
   $items['issues/add'] = array(
       'title' => t('Add new Issue'),
       'page callback' => 'drupal_get_form',
@@ -87,10 +86,10 @@ function eneon_menu() {
       'file' => 'eneon.issue.wizard.inc',
   );
 
-  $items['networks'] = array(
-      'title' => t('Networks'),
-      'access arguments' => array('view content'),
-  );
+//   $items['networks'] = array(
+//       'title' => t('Networks'),
+//       'access arguments' => array('view content'),
+//   );
 
   $items[$autoload_network_modal_wildcard] = array(
       'title' => t('Network Details'),
