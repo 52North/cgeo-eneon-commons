@@ -24,6 +24,10 @@ services:
             - "./eneon_theme:/var/www/html/sites/all/themes/eneon_theme"
             # Essential setup instructions when container starts
             - "./config/launch.sh:/usr/local/bin/startup"
+            # Example config to map root context. For this make sure 
+            #  - to add `$base_url = 'http://localhost/<alias>'` to settings.php
+            #  - set `RewriteBase /<alias>` in Drupal's .htaccess file
+            #- "./config/docker-php.conf:/etc/apache2/conf-available/docker-php.conf"
         links:
             - eneon_db
         ports:
