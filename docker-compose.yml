@@ -27,7 +27,7 @@ services:
         links:
             - eneon_db
         ports:
-            - 80:80
+            - 8000:80
         restart: always
 
         
